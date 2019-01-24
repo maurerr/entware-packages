@@ -4,6 +4,8 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# Entware specific - PKG_BUILD_DEPENDS:=libevent2 for arm
+#
 
 include $(TOPDIR)/rules.mk
 
