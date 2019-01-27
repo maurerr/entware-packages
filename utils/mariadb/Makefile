@@ -174,7 +174,8 @@ MARIADB_COMMON_DEPENDS := \
 	+libatomic \
 	+libopenssl \
 	+libstdcpp \
-	+zlib
+	+zlib \
+        +libpthread 
 
 # Pass CPPFLAGS in the CFLAGS as otherwise the build system will
 # ignore them.
@@ -220,7 +221,8 @@ define Package/mariadb-client
   TITLE:=MariaDB database core client binaries
   DEPENDS:= \
 	  $(MARIADB_COMMON_DEPENDS) \
-	  +libncursesw
+	  +libncursesw \
+          +librt
 endef
 
 define Package/mariadb-client/description
@@ -268,7 +270,9 @@ define Package/mariadb-server
 	  +!arc:libaio \
 	  +liblzma \
 	  +libpcre \
-	  +resolveip
+	  +resolveip \
+          +librt
+
   TITLE:=MariaDB database core server binaries
   MENU:=1
   PROVIDES:=mysql-server
@@ -397,7 +401,7 @@ CMAKE_OPTIONS += \
 	-DICONV_LIBRARIES=$(ICONV_PREFIX)/lib/libiconv.$(if $(CONFIG_BUILD_NLS),so,a)
 
 CMAKE_OPTIONS += \
-	$(foreach p,$(MARIADB_SERVER_PLUGINS),-D$(plugin-$(p))=$(if $(CONFIG_PACKAGE_$(PKG_NAME)-server-plugin-$(subst _,-,$(p))),DYNAMIC,OFF))
+	$(foreach p,$(MARIADB_SERVER_PLUGINS),-D$(plugin-$(p))=$(if $(CONFIG_PACKAGE_$(PKG_NAME)-server-plugin-$(subst _,-,$(p))),DYNAMIC,NO))
 
 # Set CMAKE_FIND_ROOT_PATH_MODE_INCLUDE and CMAKE_FIND_ROOT_PATH_MODE_LIBRARY
 # to BOTH as otherwise the host build will not find some required dependencies
