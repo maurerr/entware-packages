@@ -4,14 +4,14 @@ Date: Tue, 29 Jan 2019 18:24:21 +0100
 Subject: [PATCH] define trunc and round functions
 
 ---
- source/i18n/decimfmt.cpp               | 11 ++++++++++-
- source/i18n/number_decimalquantity.cpp |  9 ++++++++-
+ i18n/decimfmt.cpp               | 11 ++++++++++-
+ i18n/number_decimalquantity.cpp |  9 ++++++++-
  2 files changed, 18 insertions(+), 2 deletions(-)
 
-diff --git a/source/i18n/decimfmt.cpp b/source/i18n/decimfmt.cpp
+diff --git a/i18n/decimfm.cpp b/source/i18n/decimfmt.cpp
 index edd8910..91f66bf 100644
---- a/source/i18n/decimfmt.cpp
-+++ b/source/i18n/decimfmt.cpp
+--- a/i18n/decimfmt.cpp
++++ b/i18n/decimfmt.cpp
 @@ -39,6 +39,15 @@ using EPadPosition = icu::DecimalFormat::EPadPosition;
  #define UBOOL_TO_BOOL(b) b
  #endif
@@ -37,10 +37,10 @@ index edd8910..91f66bf 100644
              || input <= INT32_MIN
              || input > INT32_MAX) {
          return false;
-diff --git a/source/i18n/number_decimalquantity.cpp b/source/i18n/number_decimalquantity.cpp
+diff --git a/i18n/number_decimalquantity.cpp b/source/i18n/number_decimalquantity.cpp
 index 2c4182b..12eff8b 100644
---- a/source/i18n/number_decimalquantity.cpp
-+++ b/source/i18n/number_decimalquantity.cpp
+--- a/i18n/number_decimalquantity.cpp
++++ b/i18n/number_decimalquantity.cpp
 @@ -28,6 +28,13 @@ using namespace icu::number::impl;
  using icu::double_conversion::DoubleToStringConverter;
  using icu::double_conversion::StringToDoubleConverter;
