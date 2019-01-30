@@ -1,0 +1,28 @@
+From 2e02e59234a2a4669a13dd9b1c6945676376403c Mon Sep 17 00:00:00 2001
+From: maurerr <mariusd84@gmail.com>
+Date: Wed, 30 Jan 2019 11:14:39 +0100
+Subject: [PATCH] remove pipe 2 refference
+
+---
+ src/libudev.c | 5 -----
+ 1 file changed, 5 deletions(-)
+
+diff --git a/src/libudev.c b/src/libudev.c
+index 26057d3..fad3f07 100644
+--- a/src/libudev.c
++++ b/src/libudev.c
+@@ -692,11 +692,6 @@ udev_monitor_new_from_netlink(struct udev *udev, const char *name)
+ 		return NULL;
+ 	}
+ 
+-	if (pipe2(u->pipe_fds, O_CLOEXEC) == -1) {
+-		free(u);
+-		return NULL;
+-	}
+-
+ 	// TODO: increase refcount?
+ 	u->udev = udev;
+ 	u->devd_socket = -1;
+-- 
+2.11.0
+
