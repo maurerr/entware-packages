@@ -30,7 +30,7 @@ define Package/rng-tools
   CATEGORY:=Utilities
   TITLE:=Daemon for adding entropy to kernel entropy pool
   URL:=https://github.com/nhorman/rng-tools
-  DEPENDS:=+libsysfs
+  DEPENDS:=+libsysfs +libpthread
 endef
 
 define Package/rng-tools/description
