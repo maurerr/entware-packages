@@ -68,3 +68,29 @@ index 8bf3f46..7fb1f72 100644
 -- 
 2.11.0
 
+From b58c8fc2e58f234a6c9aa5eb301d3ad7e1b2e7bf Mon Sep 17 00:00:00 2001
+From: maurerr <mariusd84@gmail.com>
+Date: Wed, 6 Feb 2019 20:23:19 +0100
+Subject: [PATCH] added missing header in btio/btio.c
+
+---
+ btio/btio.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/btio/btio.c b/btio/btio.c
+index 969cd3a..bcf2684 100644
+--- a/btio/btio.c
++++ b/btio/btio.c
+@@ -46,6 +46,9 @@
+ #ifndef BT_FLUSHABLE
+ #define BT_FLUSHABLE   8
+ #endif
++#define SO_PROTOCOL    0x1028  /* protocol type */
++#define SO_DOMAIN      0x1029  /* domain/socket family */
++
+
+ #define ERROR_FAILED(gerr, str, err) \
+                g_set_error(gerr, BT_IO_ERROR, err, \
+--
+2.11.0
+
