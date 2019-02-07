@@ -29,7 +29,7 @@ include $(INCLUDE_DIR)/package.mk
 define Package/emailrelay
   SECTION:=mail
   CATEGORY:=Mail
-  DEPENDS:=+EMAILRELAY_SSL:libopenssl +libstdcpp
+  DEPENDS:=+EMAILRELAY_SSL:libopenssl +libstdcpp +librt +libpthread
   TITLE:=A simple SMTP proxy and MTA
   URL:=http://emailrelay.sourceforge.net/
   MENU:=1
@@ -100,6 +100,8 @@ ifeq ($(CONFIG_EMAILRELAY_SUPPORT_VERBOSE_DBG),y)
 	CONFIGURE_ARGS += \
 		--enable-debug=yes
 endif
+
+TARGET_CXXFLAGS+= -std=c++11
 
 define Package/emailrelay/install
 	$(INSTALL_DIR) $(1)/opt/bin
