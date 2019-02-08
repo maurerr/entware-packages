@@ -79,7 +79,7 @@ define Build/Configure
 			\nChecking uname machine type: \"$(ARCH)\" \
 			\nChecking uname release type: \"$(LINUX_VERSION)\" \
 			\nChecking uname sysname type: \"Linux\" \
-			\nChecking uname version type: \"$(LINUX_UNAME_VERSION)\" \
+			\nChecking uname version type: \"entware-backports\" \
 		\n" ; \
 		$(CONFIGURE_VARS) \
 		./buildtools/bin/waf configure \
