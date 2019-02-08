@@ -21,7 +21,7 @@ define Package/atop
   SECTION:=admin
   CATEGORY:=Administration
   TITLE:=System and process monitor for Linux
-  DEPENDS:=+zlib +libncurses
+  DEPENDS:=+zlib +libncurses +librt +libpthread
   URL:=https://www.atoptool.nl/
   MAINTAINER:=Toni Uhlig <matzeton@googlemail.com>
 endef
