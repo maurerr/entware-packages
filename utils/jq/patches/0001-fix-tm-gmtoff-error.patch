@@ -1,0 +1,30 @@
+From 5aadc9931100e3b97b6d7ceadb4b40845a3e4ac3 Mon Sep 17 00:00:00 2001
+From: maurerr <mariusd84@gmail.com>
+Date: Fri, 8 Feb 2019 10:22:25 +0100
+Subject: [PATCH] fix __tm_gmtoff error
+
+---
+ src/builtin.c | 6 ------
+ 1 file changed, 6 deletions(-)
+
+diff --git a/src/builtin.c b/src/builtin.c
+index c6c8c2e..a6fead2 100644
+--- a/src/builtin.c
++++ b/src/builtin.c
+@@ -1220,13 +1220,7 @@ static time_t my_mktime(struct tm *tm) {
+   time_t t = mktime(tm);
+   if (t == (time_t)-1)
+     return t;
+-#ifdef HAVE_TM_TM_GMT_OFF
+-  return t + tm->tm_gmtoff;
+-#elif HAVE_TM___TM_GMT_OFF
+-  return t + tm->__tm_gmtoff;
+-#else
+   return (time_t)-2; /* Not supported */
+-#endif
+ }
+ 
+ /* Compute and set tm_wday */
+-- 
+2.11.0
+
