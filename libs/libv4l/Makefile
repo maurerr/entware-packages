@@ -22,7 +22,7 @@ PKG_USE_MIPS16:=0
 PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
 
-#PKG_BUILD_DEPENDS:=argp-standalone
+PKG_BUILD_DEPENDS:=argp-standalone
 
 #include $(INCLUDE_DIR)/uclibc++.mk
 include $(INCLUDE_DIR)/package.mk
@@ -77,7 +77,7 @@ TARGET_CFLAGS += $(FPIC)
 #  CCLD     media-ctl
 #../opt/lib/libudev.so: undefined reference to `pthread_join'
 #../opt/lib/libudev.so: undefined reference to `pthread_create'
-TARGET_LDFLAGS += -lpthread
+TARGET_LDFLAGS += -lpthread -largp
 
 CONFIGURE_ARGS+= \
 	--disable-doxygen-doc \
