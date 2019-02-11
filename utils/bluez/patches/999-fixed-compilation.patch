@@ -4,27 +4,10 @@ Date: Wed, 6 Feb 2019 18:58:12 +0100
 Subject: [PATCH] fixed compilation
 
 ---
- client/gatt.c              | 4 ----
  profiles/input/uhid_copy.h | 2 +-
- src/gatt-client.c          | 3 ---
  src/shared/att.c           | 2 ++
- 4 files changed, 3 insertions(+), 8 deletions(-)
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/client/gatt.c b/client/gatt.c
-index c7dfe42..13b81b7 100644
---- a/client/gatt.c
-+++ b/client/gatt.c
-@@ -1939,10 +1939,6 @@ static DBusMessage *chrc_create_pipe(struct chrc *chrc, DBusMessage *msg)
- 	bool dir;
- 	DBusMessage *reply;
- 
--	if (pipe2(pipefd, O_DIRECT | O_NONBLOCK | O_CLOEXEC) < 0)
--		return g_dbus_create_error(msg, "org.bluez.Error.Failed", "%s",
--							strerror(errno));
--
- 	dir = dbus_message_has_member(msg, "AcquireWrite");
- 
- 	io = pipe_io_new(pipefd[!dir], chrc);
 diff --git a/profiles/input/uhid_copy.h b/profiles/input/uhid_copy.h
 index 0ef73d4..fad2754 100644
 --- a/profiles/input/uhid_copy.h
@@ -38,20 +21,6 @@ index 0ef73d4..fad2754 100644
  
  enum uhid_event_type {
  	__UHID_LEGACY_CREATE,
-diff --git a/src/gatt-client.c b/src/gatt-client.c
-index 234f46e..ee28602 100644
---- a/src/gatt-client.c
-+++ b/src/gatt-client.c
-@@ -1134,9 +1134,6 @@ static DBusMessage *characteristic_create_pipe(struct characteristic *chrc,
- 	if (!gatt || !bt_gatt_client_is_ready(gatt))
- 		return btd_error_failed(msg, "Not connected");
- 
--	if (pipe2(pipefd, O_DIRECT | O_NONBLOCK | O_CLOEXEC) < 0)
--		return btd_error_failed(msg, strerror(errno));
--
- 	dir = dbus_message_has_member(msg, "AcquireWrite");
- 
- 	io = io_new(pipefd[!dir]);
 diff --git a/src/shared/att.c b/src/shared/att.c
 index 8bf3f46..7fb1f72 100644
 --- a/src/shared/att.c
