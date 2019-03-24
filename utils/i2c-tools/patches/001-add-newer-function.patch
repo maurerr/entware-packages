@@ -1,0 +1,25 @@
+From babf67fd5b674f1b572e3fa1e2cfcfda949a7d58 Mon Sep 17 00:00:00 2001
+From: maurerr <mariusd84@gmail.com>
+Date: Sat, 9 Feb 2019 14:02:06 +0100
+Subject: [PATCH] added I2C_FUNC_SMBUS_PEC to to tools/i2cbusses.h
+
+---
+ tools/i2cbusses.h | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/tools/i2cbusses.h b/tools/i2cbusses.h
+index 26143a5..5835f6c 100644
+--- a/tools/i2cbusses.h
++++ b/tools/i2cbusses.h
+@@ -22,6 +22,8 @@
+ #ifndef _I2CBUSSES_H
+ #define _I2CBUSSES_H
+ 
++#define I2C_FUNC_SMBUS_PEC		0x00000008
++
+ #include <unistd.h>
+ 
+ struct i2c_adap {
+-- 
+2.11.0
+
