@@ -21,7 +21,7 @@ PKG_USE_MIPS16:=0
 PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
 
-PKG_BUILD_DEPENDS:=argp-standalone
+#PKG_BUILD_DEPENDS:=argp-standalone
 
 #include $(INCLUDE_DIR)/uclibc++.mk
 include $(INCLUDE_DIR)/package.mk
@@ -72,13 +72,8 @@ define Package/v4l-utils/description
   This package contains the video4linux utilities.
 endef
 
-#TARGET_CFLAGS += -flto
-#TARGET_LDFLAGS += -lpthread -Wl,--gc-sections
-TARGET_CFLAGS += $(FPIC)
-#  CCLD     media-ctl
-#../opt/lib/libudev.so: undefined reference to `pthread_join'
-#../opt/lib/libudev.so: undefined reference to `pthread_create'
-TARGET_LDFLAGS += -lpthread -largp
+TARGET_CFLAGS += -flto
+TARGET_LDFLAGS += -lpthread -Wl,--gc-sections
 
 CONFIGURE_ARGS+= \
 	--disable-doxygen-doc \

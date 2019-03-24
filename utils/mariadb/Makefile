@@ -172,9 +172,7 @@ include $(INCLUDE_DIR)/nls.mk
 MARIADB_COMMON_DEPENDS := \
 	$(ICONV_DEPENDS) \
 	+libopenssl \
-	+libstdcpp \
-	+zlib \
-        +libpthread 
+	+zlib
 
 MARIADB_COMMON_DEPENDS_EXE := \
 	$(MARIADB_COMMON_DEPENDS) \
@@ -247,11 +245,9 @@ endef
 
 define Package/mariadb-client
   $(call Package/mariadb/Default)
-  TITLE:=MariaDB database core client binaries
-  DEPENDS:= \
-	  $(MARIADB_COMMON_DEPENDS) \
-	  +libncursesw \
-          +librt
+  TITLE:=MariaDB database client
+  MENU:=1
+  DEPENDS:=mariadb-client-base
 endef
 
 define Package/mariadb-client/description
@@ -268,9 +264,7 @@ define Package/mariadb-client-base
   TITLE:=MariaDB database client base
   DEPENDS:=mariadb-common \
 	  $(MARIADB_COMMON_DEPENDS_EXE) \
-	  +libncursesw \
-	  +libedit \
-          +librt
+	  +libedit
 endef
 
 define Package/mariadb-client-base/conffiles
@@ -341,8 +335,7 @@ define Package/mariadb-server-base
 	  +!arc:libaio \
 	  +liblzma \
 	  +libpcre \
-	  +resolveip \
-	  +librt
+	  +resolveip
   TITLE:=MariaDB database server base
   USERID:=mariadb=376:mariadb=376
 endef

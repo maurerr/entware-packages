@@ -111,7 +111,7 @@ endef
 define Package/golang
 $(call Package/golang/Default)
   TITLE+= (compiler)
-  DEPENDS+= +golang-src +libpthread
+  DEPENDS+= +golang-src
 endef
 
 define Package/golang/description

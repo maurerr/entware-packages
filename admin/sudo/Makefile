@@ -32,7 +32,6 @@ define Package/sudo
   TITLE:=Delegate authority to run commands
   URL:=https://www.sudo.ws/
   MAINTAINER:=Gergely Kiss <mail.gery@gmail.com>
-  DEPENDS:=+libpthread
 endef
 
 define Package/sudo/description

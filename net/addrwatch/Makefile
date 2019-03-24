@@ -24,7 +24,7 @@ include $(INCLUDE_DIR)/package.mk
 define Package/addrwatch
   SECTION:=net
   CATEGORY:=Network
-  DEPENDS:=+libpcap +libevent2 +librt
+  DEPENDS:=+libpcap +libevent2
   TITLE:=IPv4/IPv6 and ethernet address pairing tool
   URL:=https://github.com/fln/addrwatch
   MAINTAINER:=Ondrej Caletka <ondrej@caletka.cz>

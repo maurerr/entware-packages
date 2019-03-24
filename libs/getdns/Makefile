@@ -37,7 +37,7 @@ define Package/getdns
 	SECTION:=libs
 	CATEGORY:=Libraries
 	TITLE+= (library)
-	DEPENDS+= +libopenssl +libpthread +!GETDNS_ENABLE_STUB_ONLY:libunbound +GETDNS_ENABLE_IDN_LIBIDN2:libidn2
+	DEPENDS+= +libopenssl +!GETDNS_ENABLE_STUB_ONLY:libunbound +GETDNS_ENABLE_IDN_LIBIDN2:libidn2
 	MENU:=1
 endef
 
