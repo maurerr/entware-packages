@@ -5,24 +5,25 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Entware specific: we use cups & sane-libs packages
+# Entware specific: hplip-common and hplip-sane merged into hplip-full
+# We use sane-libs packages
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=hplip
-PKG_VERSION:=3.18.10
-PKG_RELEASE:=1
+PKG_VERSION:=3.18.12
+PKG_RELEASE:=1a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@SF/hplip
-PKG_HASH:=50d3c645f4ba5ae4a10c0f87cedcd0c0fd1598b412c9511476a9bb3b13101901
+PKG_HASH:=3ba5278d5fcaf83ecd04d16850f2f24c43c78c1189c15ae32cae756360c2fabd
 
 PKG_MAINTAINER:=Luiz Angelo Daros de Luca <luizluca@gmail.com>
 PKG_LICENSE:=GPL-2.0 GPL-2.0+
 PKG_LICENSE_FILES:=COPYING LICENSE
 
 PKG_BUILD_PARALLEL:=1
-PKG_BUILD_DEPENDS:= python cups
+PKG_BUILD_DEPENDS:= python libcups
 PKG_FIXUP:=autoreconf
 
 include $(INCLUDE_DIR)/package.mk
@@ -65,7 +66,7 @@ endef
 define Package/hplip-full
 $(call Package/hplip/Default)
   TITLE+= (full files)
-  DEPENDS+=+libjpeg +libtiff +libusb-compat +cups +sane-libs +dbus +python +libcupsimage
+  DEPENDS:=+libusb-compat +sane-libs +dbus +python +libcups
 endef
 
 define Package/hplip-full/description

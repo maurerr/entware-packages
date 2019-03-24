@@ -37,6 +37,7 @@ CONFIGURE_ARGS+= \
 	--enable-transparent \
 	--disable-regexcheck \
 
+# Entware specific:
 MAKE_FLAGS += \
 	LIBS="-lresolv -lnsl $(TARGET_LDFLAGS)" \
 

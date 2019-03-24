@@ -4,15 +4,17 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# Entware specific: use shipped openssl and libuv to prevent do_page_fault()
+# runtime error on MIPS platforms.
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=node
-PKG_VERSION:=v8.12.0
+PKG_VERSION:=v8.14.1
 PKG_RELEASE:=1
 PKG_SOURCE:=node-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://nodejs.org/dist/${PKG_VERSION}
-PKG_HASH:=5a9dff58016c18fb4bf902d963b124ff058a550ebcd9840c677757387bce419a
+PKG_HASH:=b1df87803ddffb76fc6739f025f69f6b8288514fcd2f278f0d675ac3d52a6b9b
 
 HOST_BUILD_DEPENDS:=python/host
 PKG_BUILD_DEPENDS:=python/host
@@ -37,7 +39,7 @@ define Package/node
   SUBMENU:=Node.js
   TITLE:=Node.js is a platform built on Chrome's JavaScript runtime
   URL:=https://nodejs.org/
-  DEPENDS:=+libstdcpp +libopenssl +zlib +USE_UCLIBC:libpthread +USE_UCLIBC:librt +NODEJS_ICU:icu +libuv
+  DEPENDS:=+libstdcpp +zlib +libnghttp2 +libhttp-parser +USE_UCLIBC:libpthread +USE_UCLIBC:librt +NODEJS_ICU:icu
 endef
 
 define Package/node/description
@@ -85,7 +87,8 @@ CONFIGURE_ARGS:= \
 	--dest-os=linux \
 	--without-snapshot \
 	--shared-zlib \
-	--shared-openssl \
+	--shared-nghttp2 \
+	--shared-http-parser \
 	--with-intl=$(if $(CONFIG_NODEJS_ICU),system-icu,none) \
 	$(if $(findstring mips,$(NODEJS_CPU)), \
 		$(if $(CONFIG_SOFT_FLOAT),--with-mips-float-abi=soft)) \
@@ -93,8 +96,7 @@ CONFIGURE_ARGS:= \
 	$(if $(findstring +vfp",$(CONFIG_CPU_TYPE)),--with-arm-fpu=vfp) \
 	$(if $(findstring +vfpv3",$(CONFIG_CPU_TYPE)),--with-arm-fpu=vfpv3-d16) \
 	$(if $(findstring +vfpv4",$(CONFIG_CPU_TYPE)),--with-arm-fpu=vfpv3) \
-	--prefix=/opt \
-	--shared-libuv
+	--prefix=/opt
 
 HOST_CONFIGURE_VARS:=
 
