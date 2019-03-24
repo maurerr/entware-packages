@@ -4,7 +4,7 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# conffile + all files from /opt/lib/sqid added
+# Entware specific: conffile defined, all files from /opt/lib/sqid added
 
 include $(TOPDIR)/rules.mk
 
@@ -67,7 +67,7 @@ define Package/squid-mod-cachemgr
   TITLE:=Web based proxy manager and reporting tool
 endef
 
-ifeq ($(CONFIG_GCC_USE_VERSION_7_3_0),y)
+ifeq ($(CONFIG_GCC_USE_VERSION_7_4_0),y)
 TARGET_CFLAGS += -Werror=format-truncation=0
 endif
 
