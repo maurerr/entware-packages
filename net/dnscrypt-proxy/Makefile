@@ -39,7 +39,7 @@ endef
 define Package/dnscrypt-proxy
   $(call Package/dnscrypt-proxy/Default)
   DEPENDS:=+libsodium +dnscrypt-proxy-resolvers +DNSCRYPT_ENABLE_PLUGINS:libltdl \
-	+DNSCRYPT_ENABLE_PLUGINS:libldns
+	+DNSCRYPT_ENABLE_PLUGINS:libldns +libubacktrace
   TITLE:=A tool for securing communications between a client and a DNS resolver
 endef
 

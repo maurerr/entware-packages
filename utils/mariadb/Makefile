@@ -174,7 +174,8 @@ MARIADB_COMMON_DEPENDS := \
 	+libopenssl \
 	+libstdcpp \
 	+zlib \
-        +libpthread 
+        +libpthread \
+        +libubacktrace 
 
 MARIADB_COMMON_DEPENDS_EXE := \
 	$(MARIADB_COMMON_DEPENDS) \

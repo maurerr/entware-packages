@@ -28,7 +28,7 @@ include $(INCLUDE_DIR)/package.mk
 define Package/monit/Default
   SECTION:=admin
   CATEGORY:=Administration
-  DEPENDS:= +libpthread +zlib
+  DEPENDS:= +libpthread +zlib +libubacktrace
   TITLE:=System services monitoring utility
   URL:=https://mmonit.com/monit/
   MAINTAINER:=Etienne CHAMPETIER <champetier.etienne@gmail.com>
@@ -40,7 +40,7 @@ endef
 
 define Package/monit
 $(call Package/monit/Default)
-  DEPENDS+= +libopenssl
+  DEPENDS+= +libopenssl +libubacktrace
   TITLE+= (with SSL support)
   VARIANT:=ssl
 endef

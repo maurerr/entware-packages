@@ -32,7 +32,7 @@ include $(INCLUDE_DIR)/package.mk
 define Package/libdb47
   SECTION:=libs
   CATEGORY:=Libraries
-  DEPENDS:=+libxml2
+  DEPENDS:=+libxml2 +libubacktrace
   TITLE:=Berkeley DB library (4.7)
   URL:=http://www.oracle.com/us/products/database/berkeley-db
   PROVIDES:=libdb47-full
@@ -45,7 +45,7 @@ endef
 define Package/libdb47xx
   SECTION:=libs
   CATEGORY:=Libraries
-  DEPENDS:=+libdb47 +libstdcpp
+  DEPENDS:=+libdb47 +libstdcpp +libubacktrace
   TITLE:=Berkeley DB library (4.7) for C++
   URL:=http://www.oracle.com/us/products/database/berkeley-db
   PROVIDES:=libdb47xx-full

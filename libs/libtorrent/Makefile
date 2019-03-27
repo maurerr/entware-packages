@@ -25,7 +25,7 @@ define Package/libtorrent
   CATEGORY:=Libraries
   TITLE:=Rakshasa's BitTorrent library
   URL:=https://rakshasa.github.io/rtorrent/
-  DEPENDS:=+libopenssl +libsigcxx +zlib
+  DEPENDS:=+libopenssl +libsigcxx +zlib +libubacktrace
   MAINTAINER:=Rosen Penev <rosenp@gmail.com>
 endef
 

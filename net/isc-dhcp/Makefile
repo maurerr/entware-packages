@@ -37,19 +37,21 @@ define Package/isc-dhcp/Default
   SUBMENU:=IP Addresses and Names
   TITLE:=ISC's DHCP
   URL:=https://www.isc.org/software/dhcp
-  DEPENDS:=+zlib
+  DEPENDS:=+zlib +libubacktrace
 endef
 
 define Package/isc-dhcp-relay-ipv4
   $(call Package/isc-dhcp/Default)
   TITLE+= relay (without IPv6)
   VARIANT:=ipv4
+  DEPENDS:=+libubacktrace
 endef
 
 define Package/isc-dhcp-relay-ipv6
   $(call Package/isc-dhcp/Default)
   TITLE+= relay (with IPv6)
   VARIANT:=ipv6
+  DEPENDS:=+libubacktrace
 endef
 
 define Package/isc-dhcp-relay/description
@@ -133,7 +135,7 @@ endef
 
 define Package/isc-dhcp-omshell-ipv4
   $(call Package/isc-dhcp/Default)
-  DEPENDS:= +isc-dhcp-server-ipv4
+  DEPENDS:= +isc-dhcp-server-ipv4 
   TITLE+= omshell (without IPv6)
   VARIANT:=ipv4
 endef
