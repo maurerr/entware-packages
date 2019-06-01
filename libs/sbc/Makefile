@@ -37,6 +37,8 @@ define Package/sbc/description
   Needed for A2DP support.
 endef
 
+TARGET_CFLAGS += -flto
+TARGET_LDFLAGS += -flto
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include/sbc

@@ -101,7 +101,7 @@ endef
 
 define Package/php7-cli
   $(call Package/php7/Default)
-  DEPENDS+= +libopenssl +PACKAGE_php7-mod-intl:libstdcpp
+  DEPENDS+= +PACKAGE_php7-mod-intl:libstdcpp
   TITLE+= (CLI)
 endef
 
@@ -112,7 +112,7 @@ endef
 
 define Package/php7-cgi
   $(call Package/php7/Default)
-  DEPENDS+= +libopenssl +PACKAGE_php7-mod-intl:libstdcpp 
+  DEPENDS+= +PACKAGE_php7-mod-intl:libstdcpp
   TITLE+= (CGI & FastCGI)
 endef
 
@@ -134,7 +134,7 @@ endef
 
 define Package/php7-fpm
   $(call Package/php7/Default)
-  DEPENDS+= +PACKAGE_php7-mod-intl:libstdcpp +libopenssl
+  DEPENDS+= +PACKAGE_php7-mod-intl:libstdcpp
   TITLE+= (FPM)
 endef
 
@@ -627,7 +627,7 @@ $(eval $(call BuildModule,mbstring,MBString))
 $(eval $(call BuildModule,mysqli,MySQL Improved Extension,+PACKAGE_php7-mod-mysqli:php7-mod-mysqlnd,30))
 $(eval $(call BuildModule,mysqlnd,MySQL Native Driver,+php7-mod-hash))
 $(eval $(call BuildModule,opcache,OPcache,,,zend))
-$(eval $(call BuildModule,openssl,OpenSSL,+PACKAGE_php7-mod-openssl:libopenssl))
+$(eval $(call BuildModule,openssl,OpenSSL,+PACKAGE_php7-mod-openssl:libopenssl,15))
 $(eval $(call BuildModule,pcntl,PCNTL))
 $(eval $(call BuildModule,pdo,PHP Data Objects))
 $(eval $(call BuildModule,pdo-mysql,PDO driver for MySQL,+php7-mod-pdo +PACKAGE_php7-mod-pdo-mysql:php7-mod-mysqlnd))
