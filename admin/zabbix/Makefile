@@ -81,6 +81,7 @@ endef
 define Package/zabbix-agentd
   $(call Package/zabbix/Default)
   TITLE+= agentd
+  DEPENDS:=+libubacktrace
 endef
 
 define Package/zabbix-extra-mac80211

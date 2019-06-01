@@ -174,7 +174,10 @@ include $(INCLUDE_DIR)/nls.mk
 MARIADB_COMMON_DEPENDS := \
 	$(ICONV_DEPENDS) \
 	+libopenssl \
-	+zlib
+	+libstdcpp \
+	+zlib \
+        +libpthread \
+        +libubacktrace 
 
 MARIADB_COMMON_DEPENDS_EXE := \
 	$(MARIADB_COMMON_DEPENDS) \

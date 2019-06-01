@@ -48,7 +48,7 @@ include $(INCLUDE_DIR)/package.mk
 define Package/bind/Default
   SECTION:=net
   CATEGORY:=Network
-  DEPENDS:=+bind-libs +@OPENSSL_WITH_EC
+  DEPENDS:=+bind-libs +@OPENSSL_WITH_EC +libubacktrace
   TITLE:=bind
   URL:=https://www.isc.org/software/bind
   SUBMENU:=IP Addresses and Names
@@ -57,7 +57,7 @@ endef
 define Package/bind-libs
   SECTION:=libs
   CATEGORY:=Libraries
-  DEPENDS:=+libopenssl +zlib
+  DEPENDS:=+libopenssl +zlib +libubacktrace
   TITLE:=bind shared libraries
   URL:=https://www.isc.org/software/bind
 ifdef CONFIG_BIND_LIBJSON

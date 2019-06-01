@@ -179,7 +179,7 @@ $(call Package/ruby/Default)
   SECTION:=libs
   CATEGORY:=Libraries
   TITLE+= (shared library)
-  DEPENDS+= +libpthread +librt +libgmp +zlib
+  DEPENDS+= +libpthread +librt +libgmp +zlib +libubacktrace
   ABI_VERSION:=$(PKG_ABI_VERSION)
 endef
 define Package/libruby/install

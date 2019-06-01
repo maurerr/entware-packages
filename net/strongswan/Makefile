@@ -128,8 +128,7 @@ endef
 
 define Package/strongswan
 $(call Package/strongswan/Default)
-  MENU:=1
-  DEPENDS:= +libpthread
+  DEPENDS:= +libpthread +libubacktrace
 endef
 
 define Package/strongswan/config
