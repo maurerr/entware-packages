@@ -115,8 +115,6 @@ CONFIGURE_ARGS += \
 	--disable-dsa \
 	--disable-gost \
 	--enable-allsymbols \
-	--enable-tfo-client \
-	--enable-tfo-server \
 	--with-libexpat="$(STAGING_DIR)/opt" \
 	--with-ssl="$(STAGING_DIR)/opt" \
 	--with-user=unbound \

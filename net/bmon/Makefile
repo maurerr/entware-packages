@@ -23,7 +23,7 @@ include $(INCLUDE_DIR)/package.mk
 define Package/bmon
   SECTION:=net
   CATEGORY:=Network
-  DEPENDS:=+libncursesw +libnl-core +libnl-route +confuse +terminfo
+  DEPENDS:=+libncursesw +libnl-core +libnl-route +confuse +terminfo +librt
   TITLE:=bmon is a portable bandwidth monitor
   URL:=https://github.com/tgraf/bmon/
 endef

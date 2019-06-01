@@ -1,0 +1,25 @@
+From 6156f143d8a5a09b5151975f547de342bb308c5c Mon Sep 17 00:00:00 2001
+From: maurerr <mariusd84@gmail.com>
+Date: Sat, 26 Jan 2019 19:37:50 +0100
+Subject: [PATCH] add patch to undefine rpcent
+
+---
+ tirpc/rpc/rpcent.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tirpc/rpc/rpcent.h b/tirpc/rpc/rpcent.h
+index 9d3ef9c..79351c0 100644
+--- a/tirpc/rpc/rpcent.h
++++ b/tirpc/rpc/rpcent.h
+@@ -38,7 +38,7 @@
+  *
+  */
+ 
+-#ifndef _RPC_RPCENT_H
++#ifdef _RPC_RPCENT_H
+ #define _RPC_RPCENT_H
+ 
+ /*	#pragma ident "@(#)rpcent.h   1.13    94/04/25 SMI"	*/
+-- 
+2.11.0
+

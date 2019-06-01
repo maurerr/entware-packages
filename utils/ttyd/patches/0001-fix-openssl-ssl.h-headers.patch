@@ -1,0 +1,23 @@
+From 3032d259781b9794fb777f9dcc4e842595532717 Mon Sep 17 00:00:00 2001
+From: maurerr <mariusd84@gmail.com>
+Date: Tue, 5 Feb 2019 12:41:45 +0100
+Subject: [PATCH] fix openssl/ssl.h headers
+
+---
+ src/http.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/http.c b/src/http.c
+index 1704e91..d07421d 100644
+--- a/src/http.c
++++ b/src/http.c
+@@ -1,5 +1,6 @@
+ #include <string.h>
+ #include <libwebsockets.h>
++#include <openssl/ssl.h>
+ 
+ #include "server.h"
+ #include "html.h"
+-- 
+2.11.0
+

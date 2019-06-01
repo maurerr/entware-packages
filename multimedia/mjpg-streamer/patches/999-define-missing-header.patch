@@ -1,0 +1,25 @@
+From 7dc5bc6bb24f5f8f075b8f498ef8ded2cbcf855f Mon Sep 17 00:00:00 2001
+From: maurerr <mariusd84@gmail.com>
+Date: Sun, 10 Feb 2019 14:10:00 +0100
+Subject: [PATCH] define missing header
+
+---
+ plugins/input_uvc/input_uvc.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/plugins/input_uvc/input_uvc.c b/plugins/input_uvc/input_uvc.c
+index b8c6fc9..20654e2 100644
+--- a/plugins/input_uvc/input_uvc.c
++++ b/plugins/input_uvc/input_uvc.c
+@@ -45,6 +45,8 @@
+ #include "../../utils.h"
+ #include "v4l2uvc.h" // this header will includes the ../../mjpg_streamer.h
+ 
++#define V4L2_CID_POWER_LINE_FREQUENCY_AUTO	3
++
+ #ifndef NO_LIBJPEG
+     #include "jpeg_utils.h"
+     #include "huffman.h"
+-- 
+2.11.0
+

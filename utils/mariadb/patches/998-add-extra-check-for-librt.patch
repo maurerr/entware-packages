@@ -1,0 +1,26 @@
+From 31094bd1fcccba2fb8b234735bb9bf60ba4afa28 Mon Sep 17 00:00:00 2001
+From: Ryan Coe <bluemrp9@gmail.com>
+Date: Sun, 18 Sep 2016 16:35:59 -0700
+Subject: [PATCH 1/1] add extra check for librt
+
+Signed-off-by: Ryan Coe <bluemrp9@gmail.com>
+---
+ configure.cmake | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/configure.cmake b/configure.cmake
+index 896226de954f4642a238ca6a72e0930590dc1681..77ca485fb05e6b63bb69f9561b4eabfaa208a419 100644
+--- a/configure.cmake
++++ b/configure.cmake
+@@ -126,6 +126,9 @@ IF(UNIX)
+   IF(NOT LIBRT)
+     MY_SEARCH_LIBS(clock_gettime rt LIBRT)
+   ENDIF()
++  IF(NOT LIBRT)
++    MY_SEARCH_LIBS(posix_spawn_file_actions_addclose rt LIBRT)
++  ENDIF()
+   FIND_PACKAGE(Threads)
+
+   SET(CMAKE_REQUIRED_LIBRARIES
+--
+2.9.3
