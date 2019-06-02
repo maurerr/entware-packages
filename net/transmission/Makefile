@@ -121,7 +121,7 @@ define Package/transmission-daemon-openssl/conffiles
 endef
 Package/transmission-daemon-mbedtls/conffiles = $(Package/transmission-daemon-openssl/conffiles)
 
-TARGET_CFLAGS += -flto
+TARGET_CFLAGS += 
 TARGET_LDFLAGS += -Wl,--gc-sections -Wl,--as-needed
 
 CONFIGURE_ARGS += \

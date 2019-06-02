@@ -72,8 +72,8 @@ CMAKE_OPTIONS += \
 	-DUSE_PYTHON=yes \
 	-DWITH_LIBUSB=no
 
-TARGET_CFLAGS+=-flto
-TARGET_CXXFLAGS+=-DWITH_GPIO -flto
+TARGET_CFLAGS+=
+TARGET_CXXFLAGS+=-DWITH_GPIO 
 
 define Build/Prepare
 	$(call Build/Prepare/Default)

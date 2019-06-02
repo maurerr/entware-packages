@@ -70,7 +70,7 @@ define BuildSubPackage
   $$(eval $$(call BuildPackage,$(1)))
 endef
 
-TARGET_LDFLAGS += -Wl,--gc-sections -flto
+TARGET_LDFLAGS += -Wl,--gc-sections 
 
 CONFIGURE_ARGS += \
 	--enable-small \

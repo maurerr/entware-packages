@@ -72,7 +72,7 @@ define Package/v4l-utils/description
   This package contains the video4linux utilities.
 endef
 
-#TARGET_CFLAGS += -flto
+#TARGET_CFLAGS += 
 #TARGET_LDFLAGS += -lpthread -Wl,--gc-sections
 TARGET_CFLAGS += $(FPIC)
 #  CCLD     media-ctl

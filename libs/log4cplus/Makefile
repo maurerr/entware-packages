@@ -38,7 +38,7 @@ define Package/log4cplus/description
   configuration. It is modeled after the Java log4j API.
 endef
 
-TARGET_CFLAGS += -flto
+TARGET_CFLAGS += 
 
 TARGET_LDFLAGS += -Wl,--gc-sections,--as-needed
 

@@ -82,8 +82,8 @@ CONFIGURE_ARGS += \
 	--without-libuv \
 	--with-libz
 
-TARGET_CXXFLAGS += -ffunction-sections -fdata-sections -flto
-TARGET_LDFLAGS += -Wl,--gc-sections -flto
+TARGET_CXXFLAGS += -ffunction-sections -fdata-sections 
+TARGET_LDFLAGS += -Wl,--gc-sections 
 
 define Package/aria2/conffiles
 /opt/etc/aria2.conf

@@ -53,7 +53,7 @@ define Download/live555
 	HASH:=$(LIVE555_HASH)
 endef
 
-TARGET_CFLAGS += -flto
+TARGET_CFLAGS += 
 TARGET_CXXFLAGS += -fno-rtti
 TARGET_LDFLAGS += -Wl,--gc-sections
 

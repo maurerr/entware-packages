@@ -29,7 +29,7 @@ include $(INCLUDE_DIR)/package.mk
 ifeq ($(CONFIG_USE_UCLIBCXX),y)
 TARGET_LDFLAGS +=-nodefaultlibs
 endif
-TARGET_CXXFLAGS +=-fno-rtti -flto
+TARGET_CXXFLAGS +=-fno-rtti 
 TARGET_LDFLAGS += -lpthread $(FPIC) -Wl,--gc-sections
 
 define Package/unrar/Default

@@ -42,7 +42,7 @@ ifeq ($(CONFIG_USE_UCLIBCXX),y)
 TARGET_LDFLAGS += -nodefaultlibs
 endif
 
-TARGET_CXXFLAGS += -fno-rtti -flto
+TARGET_CXXFLAGS += -fno-rtti 
 
 define Package/bonniexx/install
 	$(INSTALL_DIR) $(1)/usr/bin

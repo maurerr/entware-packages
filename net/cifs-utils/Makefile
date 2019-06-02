@@ -29,7 +29,7 @@ define Package/cifsmount
   URL:=https://wiki.samba.org/index.php/LinuxCIFS_utils
 endef
 
-TARGET_CFLAGS += $(FPIC) -ffunction-sections -flto
+TARGET_CFLAGS += $(FPIC) -ffunction-sections 
 TARGET_LDFLAGS += -Wl,--gc-sections,--as-needed
 
 CONFIGURE_ARGS += \

@@ -49,7 +49,7 @@ define Package/fcgi/description
  server specific APIs.
 endef
 
-TARGET_CXXFLAGS += -fno-rtti -flto
+TARGET_CXXFLAGS += -fno-rtti 
 TARGET_LDFLAGS += -Wl,--gc-sections,--as-needed
 
 define Build/InstallDev
