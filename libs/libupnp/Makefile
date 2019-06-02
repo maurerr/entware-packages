@@ -45,8 +45,7 @@ define Package/libupnp-sample/description
 TVcontrolpoint & tvdevice sample applications run inside /opt/etc/upnp-tvdevice/
 endef
 
-TARGET_CFLAGS += -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 -flto
-TARGET_LDFLAGS += -flto
+TARGET_CFLAGS += -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 
 
 CONFIGURE_VARS += ac_cv_lib_compat_ftime=no
 
