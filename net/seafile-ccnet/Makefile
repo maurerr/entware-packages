@@ -32,7 +32,7 @@ define Package/seafile-ccnet
     URL:=http://seafile.com/
     DEPENDS:=+libsearpc +libevent2 +libopenssl \
 		+glib2 +python +libzdb +libuuid \
-		+libpthread +libsqlite3 +jansson $(ICONV_DEPENDS)
+		+libpthread +libsqlite3 +jansson +libmariadb $(ICONV_DEPENDS)
 endef
 
 define Package/seafile-ccnet/description
