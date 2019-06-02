@@ -96,7 +96,7 @@ endef
 define Package/libgnutls
 $(call Package/gnutls/Default)
   TITLE+= (library)
-  DEPENDS+= +libnettle +!LIBNETTLE_MINI:libgmp +GNUTLS_EXT_LIBTASN1:libtasn1 +GNUTLS_PKCS11:p11-kit +libatomic
+  DEPENDS+= +libnettle +!LIBNETTLE_MINI:libgmp +GNUTLS_EXT_LIBTASN1:libtasn1 +GNUTLS_PKCS11:p11-kit +libatomic +libpthread
 endef
 
 define Package/libgnutls/description
