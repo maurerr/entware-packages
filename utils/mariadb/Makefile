@@ -251,7 +251,9 @@ define Package/mariadb-client
   DEPENDS:= \
 	  $(MARIADB_COMMON_DEPENDS) \
 	  +libncursesw \
-          +librt
+          +librt \
+          +libatomic \
+          +libedit
 endef
 
 define Package/mariadb-client/description
