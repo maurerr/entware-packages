@@ -4,15 +4,15 @@ Date: Wed, 6 Feb 2019 13:59:18 +0100
 Subject: [PATCH] update nl80211.h locally
 
 ---
- src/aircrack-osdep/linux.c   |    2 +-
- src/aircrack-osdep/nl80211.h | 6351 ++++++++++++++++++++++++++++++++++++++++++
+ lib/osdep/linux.c   |    2 +-
+ lib/osdep/nl80211.h | 6351 ++++++++++++++++++++++++++++++++++++++++++
  2 files changed, 6352 insertions(+), 1 deletion(-)
- create mode 100644 src/aircrack-osdep/nl80211.h
+ create mode 100644 lib/osdep/nl80211.h
 
-diff --git a/src/aircrack-osdep/linux.c b/src/aircrack-osdep/linux.c
+diff --git a/lib/osdep/linux.c b/src/aircrack-osdep/linux.c
 index a9101dc..3167c06 100644
---- a/src/aircrack-osdep/linux.c
-+++ b/src/aircrack-osdep/linux.c
+--- a/lib/osdep/linux.c
++++ b/lib/osdep/linux.c
 @@ -43,7 +43,7 @@
  #include <limits.h>
  
@@ -22,11 +22,11 @@ index a9101dc..3167c06 100644
  #include <netlink/genl/genl.h>
  #include <netlink/genl/family.h>
  #include <netlink/genl/ctrl.h>
-diff --git a/src/aircrack-osdep/nl80211.h b/src/aircrack-osdep/nl80211.h
+diff --git a/lib/osdep/nl80211.h b/src/aircrack-osdep/nl80211.h
 new file mode 100644
 index 0000000..31ae5c7
 --- /dev/null
-+++ b/src/aircrack-osdep/nl80211.h
++++ b/lib/osdep/nl80211.h
 @@ -0,0 +1,6351 @@
 +#ifndef __LINUX_NL80211_H
 +#define __LINUX_NL80211_H
