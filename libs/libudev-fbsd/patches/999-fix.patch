@@ -9,3 +9,45 @@
  
  	for (;;) {
  		ssize_t len;
+
+From f2bc23f3e437ac8c31e3b6fd82661d0ecf116af4 Mon Sep 17 00:00:00 2001
+From: maurerr <mariusd84@gmail.com>
+Date: Mon, 17 Jun 2019 16:30:38 +0200
+Subject: [PATCH] init
+
+---
+ src/libudev.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
+
+diff --git a/src/libudev.c b/src/libudev.c
+index d6d67f0..df727c8 100644
+--- a/src/libudev.c
++++ b/src/libudev.c
+@@ -28,6 +28,24 @@
+ #define LOG(...)
+ #endif
+ 
++int __set_errno(int n)
++{
++           errno = n;
++                   return -1;
++}
++
++int
++pipe2 (int pipedes[2], int flags)
++{
++         if (pipedes == NULL)
++                     {
++                                       __set_errno (EINVAL);
++                                                     return -1;
++                                                             }
++           __set_errno (ENOSYS);
++                 return -1;
++}
++
+ struct udev {
+ 	int refcount;
+ };
+-- 
+2.11.0
+

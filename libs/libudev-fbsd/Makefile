@@ -29,7 +29,7 @@ define Package/libudev-fbsd
   CATEGORY:=Libraries
   TITLE:=small udev shim for FreeBSD/devd (and other non-systemd)
   URL:=https://github.com/jiixyj/libudev-fbsd
-  DEPENDS:=+libevdev
+  DEPENDS:=+libevdev +libpthread
   PROVIDES:=libudev
   CONFLICTS:=libudev eudev udev
 endef
