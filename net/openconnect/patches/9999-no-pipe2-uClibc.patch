@@ -16,7 +16,7 @@ index 635ff1e..adadab3 100644
  	return -EPERM;
  #else
 -#ifdef __linux__
-+#if defined(__linux__) !defined(__UCLIBC__)
++#if defined(__linux__) && !defined(__UCLIBC__)
  	if (pipe2(pipefd, O_CLOEXEC))
  #endif
  	{
