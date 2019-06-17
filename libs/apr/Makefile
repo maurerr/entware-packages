@@ -53,7 +53,6 @@ CONFIGURE_VARS += \
 	apr_cv_mutex_recursive=yes \
 	apr_cv_epoll_create1=yes \
 	apr_cv_epoll=yes \
-	apr_cv_dup3=yes \
 	apr_cv_accept4=yes
 
 ifneq ($(CONFIG_ARCH_64BIT),y)
