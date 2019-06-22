@@ -81,7 +81,7 @@ endef
 define Package/zabbix-agentd
   $(call Package/zabbix/Default)
   TITLE+= agentd
-  DEPENDS:=+libubacktrace
+  DEPENDS:=+libubacktrace $(ICONV_DEPENDS) +libpcre +zlib +libpthread
 endef
 
 define Package/zabbix-extra-mac80211
@@ -105,17 +105,19 @@ endef
 define Package/zabbix-sender
   $(call Package/zabbix/Default)
   TITLE+= sender
+  DEPENDS:=+libubacktrace $(ICONV_DEPENDS) +libpcre +zlib +libpthread
 endef
 
 define Package/zabbix-get
   $(call Package/zabbix/Default)
   TITLE+= get
+  DEPENDS:=+libubacktrace $(ICONV_DEPENDS) +libpcre +zlib +libpthread
 endef
 
 define Package/zabbix-server
   $(call Package/zabbix/Default)
   TITLE+= server
-  DEPENDS += +ZABBIX_POSTGRESQL:libpq +ZABBIX_MYSQL:libmariadbclient +libevent2
+  DEPENDS += +ZABBIX_POSTGRESQL:libpq +ZABBIX_MYSQL:libmariadbclient +libevent2 +libubacktrace
 endef
 
 define Package/zabbix-server-frontend
@@ -129,7 +131,7 @@ endef
 define Package/zabbix-proxy
   $(call Package/zabbix/Default)
   TITLE+= proxy
-  DEPENDS += +ZABBIX_POSTGRESQL:libpq +ZABBIX_MYSQL:libmariadbclient +libevent2
+  DEPENDS += +ZABBIX_POSTGRESQL:libpq +ZABBIX_MYSQL:libmariadbclient +libevent2 +libubacktrace
 endef
 
 define Package/zabbix-extra-mac80211/description
