@@ -5,11 +5,12 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# Entware specific: MAKE_FLAGS += CLIENT_LDFLAGS="$$(TARGET_LDFLAGS)"
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=mosquitto
-PKG_VERSION:=1.6.2
+PKG_VERSION:=1.6.4
 PKG_RELEASE:=1
 PKG_LICENSE:=BSD-3-Clause
 PKG_LICENSE_FILES:=LICENSE.txt
@@ -17,7 +18,7 @@ PKG_CPE_ID:=cpe:/a:eclipse:mosquitto
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://mosquitto.org/files/source/
-PKG_HASH:=33499e78dfa0ca1cb488fd196fde940a66305bdfd44ba763ce2001db2569a08b
+PKG_HASH:=a3d5822c249f6a6e13311b1b09eff6807ea01608a5a77934e1769842e9d146ef
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(BUILD_VARIANT)/$(PKG_NAME)-$(PKG_VERSION)
 
 include $(INCLUDE_DIR)/package.mk
@@ -228,10 +229,11 @@ endef
 MAKE_FLAGS += WITH_DOCS=no UNAME=Linux
 ifeq ($(BUILD_VARIANT),nossl)
 	MAKE_FLAGS += WITH_TLS=no WITH_WEBSOCKETS=no
+	MAKE_FLAGS += CLIENT_LDFLAGS="$$(TARGET_LDFLAGS)"
 else
 	MAKE_FLAGS += WITH_WEBSOCKETS=$(if $(CONFIG_MOSQUITTO_LWS),"yes","no")
 	MAKE_FLAGS += WITH_TLS_PSK=$(if $(CONFIG_OPENSSL_WITH_PSK),"yes","no")
-	MAKE_FLAGS += CLIENT_LDFLAGS="$$(CLIENT_LDFLAGS) -L$(STAGING_DIR)/opt/lib -lssl -lcrypto"
+	MAKE_FLAGS += CLIENT_LDFLAGS="$$(TARGET_LDFLAGS) -lssl -lcrypto"
 endif
 
 $(eval $(call BuildPackage,mosquitto-ssl))

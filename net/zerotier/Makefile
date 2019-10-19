@@ -7,18 +7,17 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=zerotier
-PKG_VERSION:=1.1.14
-PKG_RELEASE:=4
+PKG_VERSION:=1.4.6
+PKG_RELEASE:=1
 
-PKG_LICENSE:=GPL-3.0
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
+PKG_SOURCE_URL:=https://codeload.github.com/zerotier/ZeroTierOne/tar.gz/$(PKG_VERSION)?
+PKG_HASH:=d1a0eeb03acfa446f67adf5901902d17de14b4648c21e160024acf476e3d4fba
+PKG_BUILD_DIR:=$(BUILD_DIR)/ZeroTierOne-$(PKG_VERSION)
 
-PKG_SOURCE_PROTO:=git
-PKG_SOURCE_URL:=https://github.com/zerotier/ZeroTierOne
-PKG_SOURCE_SUBDIR:=ZeroTierOne-$(PKG_VERSION)
-PKG_SOURCE_VERSION:=ae491c277e6f35d1acbdcbf700e2b834957295ae
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
-PKG_MIRROR_MD5SUM:=c8c3219c995a59161832d580a194f6280de7a4eef75cebece6f38400b64f003e
-PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_SOURCE_SUBDIR)
+PKG_MAINTAINER:=Moritz Warning <moritzwarning@web.de>
+PKG_LICENSE:=BSL 1.1
+PKG_LICENSE_FILES:=LICENSE.txt
 
 PKG_BUILD_PARALLEL:=1
 include $(INCLUDE_DIR)/package.mk
@@ -30,7 +29,6 @@ define Package/zerotier
   TITLE:=Create flat virtual Ethernet networks of almost unlimited size
   URL:=https://www.zerotier.com
   SUBMENU:=VPN
-  MAINTAINER:=Moritz Warning <moritzwarning@web.de>
 endef
 
 define Package/zerotier/description
@@ -66,6 +64,18 @@ ifeq ($(CONFIG_ZEROTIER_ENABLE_SELFTEST),y)
 	$(call Build/Compile/Default,selftest)
 endif
 endef
+
+# Make binary smaller
+TARGET_CFLAGS += -ffunction-sections -fdata-sections
+TARGET_LDFLAGS += -Wl,--gc-sections,--as-needed
+
+ifdef CONFIG_USE_UCLIBC
+	TARGET_CFLAGS += -D'valloc(a)=aligned_alloc(getpagesize(),a)'
+endif
+
+#define Package/zerotier/conffiles
+#/etc/config/zerotier
+#endef
 
 define Package/zerotier/install
 	$(INSTALL_DIR) $(1)/opt/bin

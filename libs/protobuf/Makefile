@@ -8,17 +8,19 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=protobuf
-PKG_VERSION:=3.5.1
+PKG_VERSION:=3.8.0
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-cpp-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://github.com/google/protobuf/releases/download/v$(PKG_VERSION)
-PKG_HASH:=c28dba8782da2cfea1e11c61d335958c31a9c1bc553063546af9cbe98f204092
+PKG_HASH:=ddc96d83f3b7417da53bce2510b94ad2796465ef8763f7a4e82089157efe97aa
 
+PKG_MAINTAINER:=Ken Keys <kkeys@caida.org>
 PKG_LICENSE:=BSD-3-Clause
 PKG_LICENSE_FILES:=LICENSE
 
 PKG_BUILD_DEPENDS:=protobuf/host
+PKG_BUILD_PARALLEL:=1
 PKG_USE_MIPS16:=0# MIPS16 prevents protobuf's usage of the 'sync' asm-opcode
 
 PKG_INSTALL:=1
@@ -31,8 +33,7 @@ define Package/protobuf/Default
   CATEGORY:=Libraries
   TITLE:=A structured data encoding library
   URL:=https://github.com/google/protobuf
-  DEPENDS:=+zlib +libpthread +libstdcpp
-  MAINTAINER:=Ken Keys <kkeys@caida.org>
+  DEPENDS:=+zlib +libpthread +libatomic +libstdcpp
 endef
 
 define Package/protobuf
