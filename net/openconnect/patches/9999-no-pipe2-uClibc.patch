@@ -1,0 +1,25 @@
+From 25200f3d52287fdc6038df279ee4251b9a0125e6 Mon Sep 17 00:00:00 2001
+From: maurerr <mariusd84@gmail.com>
+Date: Mon, 17 Jun 2019 07:55:59 +0200
+Subject: [PATCH] fix
+
+---
+ gpst.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/gpst.c b/gpst.c
+index 635ff1e..adadab3 100644
+--- a/gpst.c
++++ b/gpst.c
+@@ -864,7 +864,7 @@ static int run_hip_script(struct openconnect_info *vpninfo)
+ 		     _("Error: Running the 'HIP Report' script on this platform is not yet implemented.\n"));
+ 	return -EPERM;
+ #else
+-#ifdef __linux__
++#if defined(__linux__) && !defined(__UCLIBC__)
+ 	if (pipe2(pipefd, O_CLOEXEC))
+ #endif
+ 	{
+-- 
+2.11.0
+

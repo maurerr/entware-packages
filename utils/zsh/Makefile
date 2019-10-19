@@ -83,8 +83,8 @@ define Build/Configure
 	$(MAKE) -C $(PKG_BUILD_DIR) DESTDIR="$(PKG_INSTALL_DIR)" prep
 endef
 
-TARGET_CFLAGS += -ffunction-sections -fdata-sections -flto
-TARGET_LDFLAGS += -Wl,--gc-sections -flto -fPIC
+TARGET_CFLAGS += -ffunction-sections -fdata-sections 
+TARGET_LDFLAGS += -Wl,--gc-sections  -fPIC
 
 define Package/zsh/install
 	$(INSTALL_DIR) $(1)/opt/bin

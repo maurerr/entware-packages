@@ -45,7 +45,7 @@ CONFIGURE_ARGS += \
 	--disable-udev \
 	--with-default-luks-format=LUKS2
 
-ifeq ($(CONFIG_LINUX_2_6_36),y)
+ifeq ($(CONFIG_LINUX_2_6_22),y)
 CONFIGURE_ARGS+= \
 	--disable-kernel_crypto
 endif

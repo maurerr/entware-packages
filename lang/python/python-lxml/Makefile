@@ -31,7 +31,7 @@ define Package/python-lxml/Default
   CATEGORY:=Languages
   SUBMENU:=Python
   URL:=https://lxml.de
-  DEPENDS:=+libxml2 +libxslt +libexslt
+  DEPENDS:=+libxml2 +libxslt +libexslt +librt
 endef
 
 define Package/python-lxml

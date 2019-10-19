@@ -41,6 +41,10 @@ define Build/Compile
 	$(call perlmod/Compile,,)
 endef
 
+define Host/Install
+        $(call perlmod/host/Install,$(1),)
+endef
+
 define Package/perl-www-curl/install
 	$(call perlmod/Install,$(1),WWW/Curl WWW/Curl.pm auto/WWW/Curl)
 endef

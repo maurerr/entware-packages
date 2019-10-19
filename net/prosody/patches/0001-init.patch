@@ -1,0 +1,25 @@
+From 73b51af3eafea2c2578278f4357b33816dc54c81 Mon Sep 17 00:00:00 2001
+From: maurerr <mariusd84@gmail.com>
+Date: Mon, 17 Jun 2019 11:20:09 +0200
+Subject: [PATCH] init
+
+---
+ util-src/pposix.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/util-src/pposix.c b/util-src/pposix.c
+index 5c92660..f489a7a 100644
+--- a/util-src/pposix.c
++++ b/util-src/pposix.c
+@@ -59,7 +59,7 @@
+ #endif
+ 
+ #include <fcntl.h>
+-#if defined(__linux__)
++#if defined(__linux__) && !defined(__UCLIBC__)
+ #include <linux/falloc.h>
+ #endif
+ 
+-- 
+2.11.0
+

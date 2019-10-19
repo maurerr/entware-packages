@@ -73,7 +73,7 @@ CONFIGURE_ARGS += \
 	--without-zstd \
 	--without-x
 
-TARGET_CFLAGS += -flto
+TARGET_CFLAGS += 
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include

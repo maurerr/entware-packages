@@ -245,9 +245,13 @@ endef
 
 define Package/mariadb-client
   $(call Package/mariadb/Default)
-  TITLE:=MariaDB database client
-  MENU:=1
-  DEPENDS:=mariadb-client-base
+  TITLE:=MariaDB database core client binaries
+  DEPENDS:= \
+	  $(MARIADB_COMMON_DEPENDS) \
+	  +libncursesw \
+          +librt \
+          +libatomic \
+          +libedit
 endef
 
 define Package/mariadb-client/description
@@ -264,7 +268,9 @@ define Package/mariadb-client-base
   TITLE:=MariaDB database client base
   DEPENDS:=mariadb-common \
 	  $(MARIADB_COMMON_DEPENDS_EXE) \
-	  +libedit
+	  +libncursesw \
+	  +libedit \
+          +librt
 endef
 
 define Package/mariadb-client-base/conffiles
@@ -335,7 +341,8 @@ define Package/mariadb-server-base
 	  +libaio \
 	  +liblzma \
 	  +libpcre \
-	  +resolveip
+	  +resolveip \
+	  +librt
   TITLE:=MariaDB database server base
   USERID:=mariadb=376:mariadb=376
 endef

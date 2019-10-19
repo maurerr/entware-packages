@@ -24,7 +24,7 @@ include $(INCLUDE_DIR)/package.mk
 define Package/opus-tools
   SECTION:=sound
   CATEGORY:=Sound
-  DEPENDS:=+libogg +libopus +libopusfile +libopusenc
+  DEPENDS:=+libogg +libopus +libopusfile +libopusenc 
   TITLE:=OPUS Codec tools
   URL:=http://opus-codec.org/
 endef

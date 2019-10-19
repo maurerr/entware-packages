@@ -43,6 +43,7 @@ TARGET_LDFLAGS += -nodefaultlibs
 endif
 
 TARGET_CXXFLAGS += -ffunction-sections -fdata-sections -fno-rtti -flto -std=c++98
+#TARGET_CXXFLAGS += -fno-rtti 
 
 define Package/bonniexx/install
 	$(INSTALL_DIR) $(1)/usr/bin

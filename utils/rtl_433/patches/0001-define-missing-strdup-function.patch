@@ -1,0 +1,36 @@
+From 86bc388e12f090e969f4c6272288751213f150bb Mon Sep 17 00:00:00 2001
+From: maurerr <mariusd84@gmail.com>
+Date: Sun, 10 Feb 2019 17:44:00 +0100
+Subject: [PATCH] define missing strdup function
+
+---
+ src/data.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/src/data.c b/src/data.c
+index 90bf82f..8f113fe 100644
+--- a/src/data.c
++++ b/src/data.c
+@@ -36,6 +36,19 @@
+ 
+ #include "data.h"
+ 
++# define Wchar			char
++# define Wstrdup strdup
++# define Wstrlen strlen
++Wchar *Wstrdup(register const Wchar *s1)
++{
++	register Wchar *s;
++	register size_t l = (Wstrlen(s1) + 1) * sizeof(Wchar);
++	if ((s = malloc(l)) != NULL) {
++		memcpy(s, s1, l);
++	}
++	return s;
++}
++
+ typedef void* (*array_elementwise_import_fn)(void*);
+ typedef void* (*array_element_release_fn)(void*);
+ typedef void* (*value_release_fn)(void*);
+-- 
+2.11.0
+

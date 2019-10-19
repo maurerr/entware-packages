@@ -150,8 +150,6 @@ CONFIGURE_ARGS += \
 	--disable-gost \
 	--enable-allsymbols \
 	--enable-ecdsa \
-	--enable-tfo-client \
-	--enable-tfo-server \
 	--with-libexpat="$(STAGING_DIR)/opt" \
 	--with-ssl="$(STAGING_DIR)/opt" \
 	--with-user=unbound \

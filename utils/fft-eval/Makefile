@@ -25,7 +25,7 @@ define Package/$(PKG_NAME)/description
 	Evaluates FFT samples from diferent wifi boards drivers
 endef
 
-TARGET_CFLAGS  += -ffunction-sections -fdata-sections -flto
+TARGET_CFLAGS  += -ffunction-sections -fdata-sections 
 
 define Build/Compile
 	$(TARGET_CC) -D__NOSDL__ $(PKG_BUILD_DIR)/fft_eval.c -o $(PKG_BUILD_DIR)/fft_eval -lm

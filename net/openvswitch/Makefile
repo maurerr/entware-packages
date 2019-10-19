@@ -338,7 +338,7 @@ ifneq ($(ovs_intree_kmod_enabled),)
   endif
 endif
 
-TARGET_CFLAGS += -flto -std=gnu99
+TARGET_CFLAGS +=  -std=gnu99
 MAKE_VARS += PYTHONPATH="$(HOST_PYTHON3PATH)"
 
 #$(foreach p,$(ovs_kmod_packages),\

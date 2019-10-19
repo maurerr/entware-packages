@@ -5,19 +5,19 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=fish
-PKG_VERSION:=3.0.2
-PKG_RELEASE:=4
+PKG_VERSION:=2.7.1
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=https://github.com/fish-shell/fish-shell/releases/download/$(PKG_VERSION)
-PKG_HASH:=14728ccc6b8e053d01526ebbd0822ca4eb0235e6487e832ec1d0d22f1395430e
-PKG_MAINTAINER:=Curtis Jiang <jqqqqqqqqqq@gmail.com>, Hao Dong <halbertdong@gmail.com>
+PKG_SOURCE_URL:=https://codeload.github.com/fish-shell/fish-shell/tar.gz/$(PKG_VERSION)?
+PKG_HASH:=eb43ea2eb9accf76661c487dd530a5fd345fa40a3201bd22cef2c52be39fb474
+PKG_MAINTAINER:=Curtis Jiang <jqqqqqqqqqq@gmail.com>
 PKG_LICENSE:=GPL-2.0
 PKG_CPE_ID:=cpe:/a:fishshell:fish
 
 PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
-PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)
+PKG_BUILD_DIR:=$(BUILD_DIR)/fish-shell-$(PKG_VERSION)
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -39,7 +39,6 @@ endef
 
 CONFIGURE_VARS += ac_cv_file__proc_self_stat=yes
 TARGET_CXXFLAGS += -std=c++0x
-# Entware specific:
 MAKE_FLAGS += EXTRA_CXXFLAGS="-I$(STAGING_DIR)/opt/include"
 
 define Package/fish/install
@@ -60,7 +59,7 @@ endef
 #grep fish $${IPKG_INSTROOT}/etc/shells || \
 #    echo "/usr/bin/fish" >> $${IPKG_INSTROOT}/etc/shells
 
-    # Backwards compatibility
+#    # Backwards compatibility
 #    if [[ -e /bin/fish ]] && ([[ ! -L /bin/fish ]] || [[ "$(readlink -fn $${IPKG_INSTROOT}/bin/fish)" != "../$(CONFIGURE_PREFIX)/bin/fish" ]]); then
 #        ln -fs "../$(CONFIGURE_PREFIX)/bin/fish" "$${IPKG_INSTROOT}/bin/fish"
 #    fi

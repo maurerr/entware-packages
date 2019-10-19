@@ -55,6 +55,9 @@ endef
 
 TARGET_CFLAGS += -ffunction-sections -fdata-sections -flto
 TARGET_LDFLAGS += -Wl,--gc-sections,--as-needed
+#TARGET_CFLAGS += 
+#TARGET_CXXFLAGS += -fno-rtti
+#TARGET_LDFLAGS += -Wl,--gc-sections
 
 CMAKE_OPTIONS += -DALSA=OFF -DLIVE555CFLAGS="$(TARGET_CFLAGS) -DSOCKLEN_T=socklen_t -D_LARGEFILE_SOURCE=1 -D_FILE_OFFSET_BITS=64 -DLOCALE_NOT_USED -DNO_SSTREAM=1 -DALLOW_RTSP_SERVER_PORT_REUSE=1"
 

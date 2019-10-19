@@ -43,9 +43,9 @@ fee, royalty or patent concerns.
 endef
 
 ifneq ($(findstring arm,$(CONFIG_ARCH)),)
-	TARGET_CFLAGS += -flto
-	TARGET_CXX_FLAGS += -flto
-	TARGET_LDFLAGS += -flto
+	TARGET_CFLAGS += 
+	TARGET_CXX_FLAGS += 
+	TARGET_LDFLAGS += 
 endif
 
 CONFIGURE_ARGS+= \

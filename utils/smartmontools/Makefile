@@ -72,9 +72,9 @@ TARGET_LDFLAGS +=-nodefaultlibs
 else
 CONFIGURE_VARS += with_cxx11_regex=yes
 endif
-TARGET_LDFLAGS += -flto
+TARGET_LDFLAGS += 
 
-TARGET_CXXFLAGS +=-fno-rtti -flto
+TARGET_CXXFLAGS +=-fno-rtti 
 MAKE_FLAGS +=BUILD_INFO='"(localbuild)"'
 
 CONFIGURE_ARGS += \

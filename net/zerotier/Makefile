@@ -2,6 +2,7 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# Entware: no uclibc++
 
 include $(TOPDIR)/rules.mk
 
@@ -24,7 +25,7 @@ include $(INCLUDE_DIR)/package.mk
 define Package/zerotier
   SECTION:=net
   CATEGORY:=Network
-  DEPENDS:=+libpthread +libstdcpp +libminiupnpc +libnatpmp
+  DEPENDS:=+libpthread +libstdcpp +ZEROTIER_ENABLE_NETWORK_CONTROLLER:libsqlite3 +ZEROTIER_USE_MINIUPNPC:libminiupnpc +ZEROTIER_USE_MINIUPNPC:libnatpmp
   TITLE:=Create flat virtual Ethernet networks of almost unlimited size
   URL:=https://www.zerotier.com
   SUBMENU:=VPN
@@ -38,12 +39,24 @@ define Package/zerotier/config
 	source "$(SOURCE)/Config.in"
 endef
 
-ifeq ($(CONFIG_ZEROTIER_ENABLE_DEBUG),y)
-MAKE_FLAGS += ZT_DEBUG=1
+ifeq ($(CONFIG_ZEROTIER_ENABLE_NETWORK_CONTROLLER),y)
+MAKE_FLAGS += ZT_ENABLE_NETWORK_CONTROLLER=1
+MAKE_FLAGS += LDLIBS+=" -lsqlite3 "
 endif
 
-MAKE_FLAGS += \
-	DEFS="" \
+ifeq ($(CONFIG_ZEROTIER_USE_MINIUPNPC),y)
+MAKE_FLAGS += ZT_USE_MINIUPNPC=1
+endif
+
+ifeq ($(CONFIG_ZEROTIER_ENABLE_DEBUG),y)
+TARGET_CXXFLAGS += -DZT_TRACE -ggdb3
+endif
+
+#MAKE_FLAGS += \
+#	DEFS="" \
+#	LDFLAGS+=" -pthread " \
+#	LDLIBS+=" -fno-builtin -nodefaultlibs -Wl,-Bstatic -Wl,-Bdynamic -lpthread -lm -lc -lsupc++ -lc -lgcc -lgcc_eh -lgcc_s -lssp_nonshared " \
+#	CXXFLAGS+=" -fno-builtin -nostdinc++ -DGCC_HASCLASSVISIBILITY -Wall -fPIE -fvisibility=hidden "
 
 define Build/Compile
 	$(call Build/Compile/Default,one)
@@ -68,13 +81,11 @@ define Package/zerotier/install
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/zerotier-one $(1)/opt/bin/
 	$(LN) zerotier-one $(1)/opt/bin/zerotier-cli
-	$(LN) zerotier-one $(1)/opt/bin/zerotier-idtool
+	$(LN) zerotier-one $(1)/opt/bin//zerotier-idtool
 
 ifeq ($(CONFIG_ZEROTIER_ENABLE_SELFTEST),y)
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/zerotier-selftest $(1)/opt/bin/
 endif
-
-#	$(CP) ./files/* $(1)/
 endef
 
 $(eval $(call BuildPackage,zerotier))

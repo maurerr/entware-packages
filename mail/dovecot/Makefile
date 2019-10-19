@@ -32,7 +32,7 @@ include $(INCLUDE_DIR)/nls.mk
 define Package/dovecot/Default
   SECTION:=mail
   CATEGORY:=Mail
-  DEPENDS:=+libopenldap +libopenssl +librt +zlib +libbz2 +libcap $(ICONV_DEPENDS)
+  DEPENDS:=+libopenldap +libopenssl +librt +zlib +libbz2 +libcap +libubacktrace $(ICONV_DEPENDS)
   TITLE:=An IMAP and POP3 daemon
   MAINTAINER:=Peter Wagner <tripolar@gmx.at>
   URL:=http://www.dovecot.org/

@@ -42,7 +42,7 @@ define Package/libnetsnmp
 $(call Package/net-snmp/Default)
   SECTION:=libs
   CATEGORY:=Libraries
-  DEPENDS:=+libopenssl +USE_GLIBC:libnl +libpci
+  DEPENDS:=+libopenssl +USE_GLIBC:libnl +libpci +libnl
   TITLE:=Open source SNMP implementation (libraries)
 endef
 
@@ -177,7 +177,7 @@ SNMP_TRANSPORTS_INCLUDED = Callback UDP Unix
 SNMP_TRANSPORTS_EXCLUDED = TCP TCPIPv6
 
 TARGET_CFLAGS += $(FPIC)
-#TARGET_CPPFLAGS += -I$(STAGING_DIR)/opt/include/libnl-tiny
+TARGET_CPPFLAGS += -I$(STAGING_DIR)/opt/include/libnl-tiny
 
 CONFIGURE_ARGS += \
 	--enable-mfd-rewrites \
