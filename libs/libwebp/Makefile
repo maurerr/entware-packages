@@ -1,6 +1,5 @@
-
-
-PKG_NAME:=libwebinclude $(TOPDIR)/rules.mkp
+include $(TOPDIR)/rules.mk
+PKG_NAME:=libwebp
 PKG_VERSION:=1.0.3
 PKG_RELEASE:=1
 
