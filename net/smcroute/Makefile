@@ -24,6 +24,7 @@ include $(INCLUDE_DIR)/package.mk
 define Package/smcroute
 	SECTION:=net
 	CATEGORY:=Network
+        DEPENDS:=+librt
 	SUBMENU:=Routing and Redirection
 	TITLE:=Static Multicast Routing Daemon
 	URL:=http://troglobit.com/smcroute.html
