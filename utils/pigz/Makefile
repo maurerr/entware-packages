@@ -23,7 +23,7 @@ define Package/pigz
   SUBMENU:=Compression
   TITLE:=pigz
   URL:=https://zlib.net/pigz
-  DEPENDS:=+zlib
+  DEPENDS:=+zlib +libpthread
 endef
 
 define Package/pigz/install
