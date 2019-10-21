@@ -37,7 +37,7 @@ CMAKE_OPTIONS += \
 	-DBUILD_TESTING=OFF \
 	-DUNWIND_LIBRARY=OFF
 
-TARGET_CFLAGS += -ffunction-sections -fdata-sections -flto
+TARGET_CFLAGS += -ffunction-sections -fdata-sections 
 TARGET_CFLAGS += -Wl,--gc-sections
 
 define Package/glog/install

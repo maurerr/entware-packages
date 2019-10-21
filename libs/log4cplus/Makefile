@@ -54,7 +54,7 @@ CMAKE_OPTIONS += \
 	-DUNICODE:BOOL=OFF \
 	-DWITH_ICONV:BOOL=OFF
 
-TARGET_CFLAGS += -flto
+TARGET_CFLAGS += 
 TARGET_LDFLAGS += -Wl,--gc-sections,--as-needed
 
 define Package/log4cplus/install

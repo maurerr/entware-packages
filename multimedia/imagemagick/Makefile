@@ -109,7 +109,7 @@ CONFIGURE_ARGS += \
 	--with-png \
 	--with-tiff
 
-TARGET_CFLAGS += -flto
+TARGET_CFLAGS += 
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/usr/include

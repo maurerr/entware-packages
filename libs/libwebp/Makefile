@@ -46,7 +46,7 @@ CONFIGURE_ARGS += \
 	--disable-libwebpextras \
 	--without-pic
 
-TARGET_CFLAGS += $(FPIC) -flto
+TARGET_CFLAGS += $(FPIC) 
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include/webp

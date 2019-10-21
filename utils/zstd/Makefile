@@ -65,7 +65,7 @@ ifeq ($(CONFIG_ZSTD_OPTIMIZE_O3),y)
 TARGET_CFLAGS:= $(filter-out -O%,$(TARGET_CFLAGS)) -O3
 endif
 
-TARGET_CFLAGS += -flto
+TARGET_CFLAGS += 
 TARGET_LDFLAGS += -Wl,--as-needed
 
 define Build/InstallDev

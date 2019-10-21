@@ -73,7 +73,7 @@ ifeq ($(CONFIG_LZ4_OPTIMIZE_SPEED),y)
 	TARGET_CFLAGS := $(filter-out -O%,$(TARGET_CFLAGS)) -O3
 endif
 
-TARGET_CFLAGS += $(FPIC) -ffunction-sections -fdata-sections -flto
+TARGET_CFLAGS += $(FPIC) -ffunction-sections -fdata-sections 
 TARGET_LDFLAGS += -Wl,--gc-sections
 
 define Package/liblz4/install

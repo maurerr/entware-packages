@@ -57,7 +57,7 @@ define Package/libgd/config
 	endif
 endef
 
-TARGET_CFLAGS += $(FPIC) -ffunction-sections -fdata-sections -flto
+TARGET_CFLAGS += $(FPIC) -ffunction-sections -fdata-sections 
 
 CMAKE_OPTIONS += \
 	-DENABLE_FONTCONFIG=OFF \

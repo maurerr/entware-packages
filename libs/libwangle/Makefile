@@ -31,7 +31,7 @@ endef
 CMAKE_OPTIONS += \
 	-DBoost_NO_BOOST_CMAKE=ON
 
-TARGET_CXXFLAGS += -ffunction-sections -fdata-sections -flto
+TARGET_CXXFLAGS += -ffunction-sections -fdata-sections 
 TARGET_LDFLAGS += -Wl,--gc-sections,--as-needed
 
 $(eval $(call BuildPackage,libwangle))

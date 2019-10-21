@@ -97,7 +97,7 @@ CONFIGURE_VARS += \
 	TINFO_CFLAGS="-I$(STAGING_DIR)/opt/include" \
 	TINFO_LDFLAGS="-L$(STAGING_DIR)/opt/lib -lncursesw"
 
-TARGET_CXXFLAGS += -ffunction-sections -fdata-sections -flto -std=c++11
+TARGET_CXXFLAGS += -ffunction-sections -fdata-sections  -std=c++11
 TARGET_LDFLAGS += -Wl,--gc-sections -lncurses
 
 define Package/mosh-client/install

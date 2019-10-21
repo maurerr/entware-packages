@@ -48,7 +48,7 @@ CMAKE_OPTIONS += \
 	-DBUILD_SHARED_LIBS=ON \
 	-DBUILD_TESTING=OFF
 
-TARGET_CXXFLAGS += -ffunction-sections -fdata-sections -fno-rtti -flto
+TARGET_CXXFLAGS += -ffunction-sections -fdata-sections -fno-rtti 
 TARGET_LDFLAGS += -Wl,--gc-sections
 
 define Package/libdouble-conversion/install

@@ -51,7 +51,7 @@ CMAKE_OPTIONS += \
 	-DBUILD_SHARED_LIBS=ON \
 	-DBoost_NO_BOOST_CMAKE=ON
 
-TARGET_CXXFLAGS += -ffunction-sections -fdata-sections -flto
+TARGET_CXXFLAGS += -ffunction-sections -fdata-sections 
 TARGET_LDFLAGS += -Wl,--gc-sections,--as-needed
 
 define Package/libfolly/install

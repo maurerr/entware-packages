@@ -57,7 +57,7 @@ MAKE_FLAGS += \
 	CFLAGS="$(TARGET_CFLAGS) $(TARGET_CPPFLAGS)" \
 	UNAME="Linux"
 
-TARGET_CFLAGS += -ffunction-sections -fdata-sections -flto
+TARGET_CFLAGS += -ffunction-sections -fdata-sections 
 TARGET_LDFLAGS += -Wl,--gc-sections,--as-needed
 
 define Package/dump1090/install

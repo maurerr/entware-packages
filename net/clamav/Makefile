@@ -86,7 +86,7 @@ CONFIGURE_VARS += \
 
 CONFIGURE_VARS += $(if $(CONFIG_IPV6),have_cv_ipv6=yes)
 
-TARGET_CXXFLAGS += -ffunction-sections -fdata-sections -fno-rtti -flto
+TARGET_CXXFLAGS += -ffunction-sections -fdata-sections -fno-rtti 
 TARGET_LDFLAGS += -Wl,--gc-sections,--as-needed $(if $(CONFIG_USE_MUSL),-lfts)
 TARGET_LDFLAGS += -lcurl
 
