@@ -1,6 +1,6 @@
-include $(TOPDIR)/rules.mk
 
-PKG_NAME:=libwebp
+
+PKG_NAME:=libwebinclude $(TOPDIR)/rules.mkp
 PKG_VERSION:=1.0.3
 PKG_RELEASE:=1
 
@@ -22,6 +22,7 @@ define Package/libwebp
   SECTION:=libs
   CATEGORY:=Libraries
   TITLE:=WebP library
+  DEPENDS:=+libpthread
   URL:=https://www.webmproject.org
 endef
 
