@@ -1,0 +1,12 @@
+diff --git a/src/gdbmopen.c b/src/gdbmopen.c
+index 42f429d..c53a639 100644
+--- a/src/gdbmopen.c
++++ b/src/gdbmopen.c
+@@ -32,6 +32,7 @@
+ # error "Unsupported off_t size, contact GDBM maintainer.  What crazy system is this?!?"
+ #endif
+ 
++typedef __blksize_t blksize_t;
+ static void
+ compute_directory_size (blksize_t block_size,
+ 			int *ret_dir_size, int *ret_dir_bits)
