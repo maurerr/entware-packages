@@ -29,7 +29,7 @@ define Package/tdb
   SECTION:=libs
   CATEGORY:=Libraries
   TITLE:=Trivial Database
-  DEPENDS:=+libattr
+  DEPENDS:=+libattr +libpthread
   URL:=http://sourceforge.net/projects/tdb/
   MAINTAINER:=Dmitry V. Zimin <pfzim@mail.ru>
 endef
