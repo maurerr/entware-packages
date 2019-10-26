@@ -98,7 +98,7 @@ endef
 define Package/unbound-anchor
   $(call Package/unbound/Default)
   TITLE+= (root DSKEY)
-  DEPENDS+= +unbound-daemon +libexpat
+  DEPENDS+= +unbound-daemon +libexpat +libevent2 +libunbound
 endef
 
 define Package/unbound-anchor/description
@@ -118,7 +118,7 @@ endef
 define Package/unbound-control
   $(call Package/unbound/Default)
   TITLE+= (remote control)
-  DEPENDS+= +unbound-daemon
+  DEPENDS+= +unbound-daemon +libevent2 +libunbound
 endef
 
 define Package/unbound-control/description
