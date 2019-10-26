@@ -32,7 +32,7 @@ define Package/tesseract
   CATEGORY:=Utilities
   TITLE:=Tesseract Open Source OCR Engine
   URL:=https://github.com/tesseract-ocr/tesseract
-  DEPENDS:=+libleptonica +libpthread +libstdcpp
+  DEPENDS:=+libleptonica +libpthread +libstdcpp +librt
 endef
 
 TARGET_CFLAGS:=$(filter-out -O%,$(TARGET_CFLAGS)) -O3
