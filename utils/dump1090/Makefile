@@ -41,7 +41,7 @@ endef
 define Package/view1090
   $(call Package/dump1090/Default)
   TITLE+= (view1090)
-  DEPENDS+=+libncurses
+  DEPENDS+=+libncurses +librt +libpthread
 endef
 
 define Package/dump1090/description
