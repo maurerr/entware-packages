@@ -1,0 +1,17 @@
+diff --git a/src/namespace.c b/src/namespace.c
+index 8a2e5a7..cd54517 100644
+--- a/src/namespace.c
++++ b/src/namespace.c
+@@ -17,6 +17,12 @@
+ #include <proto/log.h>
+ #include <types/global.h>
+ 
++#define __NR_setns 268
++
++int setns(int fd, int nstype)
++{
++               return syscall(__NR_setns, fd, nstype);
++}
+ /* Opens the namespace <ns_name> and returns the FD or -1 in case of error
+  * (check errno).
+  */

@@ -57,7 +57,7 @@ define Package/haproxy/Default/description
 endef
 
 define Package/haproxy
-  DEPENDS+= +libpcre +libltdl +zlib +libpthread +libopenssl +libncursesw +libreadline +libatomic
+  DEPENDS+= +libpcre +libltdl +zlib +libpthread +libopenssl +libncursesw +libreadline +libatomic +librt
   TITLE+= (with SSL support)
   VARIANT:=ssl
 $(call Package/haproxy/Default)
@@ -75,7 +75,7 @@ endef
 define Package/haproxy-nossl
   TITLE+= (without SSL support)
   VARIANT:=nossl
-  DEPENDS+= +libpcre +libltdl +zlib +libpthread +libatomic
+  DEPENDS+= +libpcre +libltdl +zlib +libpthread +libatomic +librt
   TITLE+= (without SSL support)
 $(call Package/haproxy/Default)
 endef
@@ -145,7 +145,7 @@ define Build/Compile
 		VERSION="$(PKG_VERSION)" SUBVERS="-$(PKG_RELEASE)" \
 		VERDATE="$(shell date -d @$(SOURCE_DATE_EPOCH) '+%Y/%m/%d')" IGNOREGIT=1 \
 		$(ADDON) \
-		CFLAGS="$(TARGET_CFLAGS) -fno-strict-aliasing -Wdeclaration-after-statement -fwrapv -Wno-format-truncation -Wno-unused-label -Wno-sign-compare -Wno-unused-parameter -Wno-old-style-declaration -Wno-ignored-qualifiers -Wno-clobbered -Wno-missing-field-initializers -Wno-implicit-fallthrough -Wno-stringop-overflow -Wno-cast-function-type -Wtype-limits -Wshift-negative-value -Wshift-overflow=2 -Wduplicated-cond -Wnull-dereference" \
+		CFLAGS="$(TARGET_CFLAGS) -fno-strict-aliasing -Wdeclaration-after-statement -fwrapv -Wno-format-truncation -Wno-unused-label -Wno-sign-compare -Wno-unused-parameter -Wno-old-style-declaration -Wno-ignored-qualifiers -Wno-clobbered -Wno-missing-field-initializers -Wno-implicit-fallthrough -Wno-stringop-overflow -Wno-cast-function-type -Wtype-limits" \
 		LD="$(TARGET_CC)" \
 		LDFLAGS="$(TARGET_LDFLAGS) -latomic" \
 		EXTRA_OBJS="contrib/prometheus-exporter/service-prometheus.o"
