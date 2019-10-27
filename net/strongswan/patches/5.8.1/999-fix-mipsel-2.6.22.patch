@@ -1,0 +1,52 @@
+diff --git a/src/libcharon/plugins/kernel_netlink/if_addrlabel.h b/src/libcharon/plugins/kernel_netlink/if_addrlabel.h
+new file mode 100644
+index 0000000..d1f5974
+--- /dev/null
++++ b/src/libcharon/plugins/kernel_netlink/if_addrlabel.h
+@@ -0,0 +1,33 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++/*
++ * if_addrlabel.h - netlink interface for address labels
++ *
++ * Copyright (C)2007 USAGI/WIDE Project,  All Rights Reserved.
++ *
++ * Authors:
++ *	YOSHIFUJI Hideaki @ USAGI/WIDE <yoshfuji@linux-ipv6.org>
++ */
++
++#ifndef __LINUX_IF_ADDRLABEL_H
++#define __LINUX_IF_ADDRLABEL_H
++
++#include <linux/types.h>
++
++struct ifaddrlblmsg {
++	__u8		ifal_family;		/* Address family */
++	__u8		__ifal_reserved;	/* Reserved */
++	__u8		ifal_prefixlen;		/* Prefix length */
++	__u8		ifal_flags;		/* Flags */
++	__u32		ifal_index;		/* Link index */
++	__u32		ifal_seq;		/* sequence number */
++};
++
++enum {
++	IFAL_ADDRESS = 1,
++	IFAL_LABEL = 2,
++	__IFAL_MAX
++};
++
++#define IFAL_MAX	(__IFAL_MAX - 1)
++
++#endif
+diff --git a/src/libcharon/plugins/kernel_netlink/kernel_netlink_net.c b/src/libcharon/plugins/kernel_netlink/kernel_netlink_net.c
+index c22e379..133aead 100644
+--- a/src/libcharon/plugins/kernel_netlink/kernel_netlink_net.c
++++ b/src/libcharon/plugins/kernel_netlink/kernel_netlink_net.c
+@@ -41,7 +41,7 @@
+ #include <sys/utsname.h>
+ #include <linux/netlink.h>
+ #include <linux/rtnetlink.h>
+-#include <linux/if_addrlabel.h>
++#include <if_addrlabel.h>
+ #include <unistd.h>
+ #include <errno.h>
+ #include <net/if.h>
