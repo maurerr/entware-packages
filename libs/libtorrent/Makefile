@@ -52,7 +52,7 @@ CONFIGURE_ARGS += \
 	--with-zlib=$(STAGING_DIR)/opt \
 	--without-kqueue
 
-TARGET_CXXFLAGS += -faligned-new
+#TARGET_CXXFLAGS += -faligned-new
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include

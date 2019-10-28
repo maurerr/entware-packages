@@ -1,0 +1,13 @@
+diff --git a/src/data/socket_file.cc b/src/data/socket_file.cc
+index b359ef8..b11e2a0 100644
+--- a/src/data/socket_file.cc
++++ b/src/data/socket_file.cc
+@@ -47,7 +47,7 @@
+ #include <sys/mman.h>
+ #include <sys/types.h>
+ 
+-#ifdef HAVE_FALLOCATE
++#if defined(HAVE_FALLOCATE) && !defined(__UCLIBC__)
+ #define _GNU_SOURCE
+ #include <linux/falloc.h>
+ #endif
