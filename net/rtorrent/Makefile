@@ -45,6 +45,7 @@ endef
 define Package/rtorrent
 $(call Package/rtorrent/Default)
   VARIANT:=norpc
+  DEPENDS:=+libubacktrace +libcurl +libncurses +libpthread +libstdcpp +zlib
 endef
 
 define Package/rtorrent/description
@@ -55,7 +56,7 @@ endef
 define Package/rtorrent-rpc
 $(call Package/rtorrent/Default)
   VARIANT:=rpc
-  DEPENDS+=+xmlrpc-c-server
+  DEPENDS+=+xmlrpc-c-server +libubacktrace
   TITLE+=(with rpc support)
 endef
 
@@ -76,7 +77,7 @@ ifeq ($(BUILD_VARIANT),rpc)
 CONFIGURE_ARGS += --with-xmlrpc-c
 endif
 
-TARGET_CXXFLAGS += -faligned-new
+#TARGET_CXXFLAGS += -faligned-new
 TARGET_LDFLAGS += -lcrypto -lz
 
 define Package/rtorrent/install
