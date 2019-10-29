@@ -1,0 +1,1166 @@
+diff --git a/libwebcam/compat.h b/libwebcam/compat.h
+index 7686a06..340fe3d 100755
+--- a/libwebcam/compat.h
++++ b/libwebcam/compat.h
+@@ -31,7 +31,7 @@
+ 
+ #ifdef USE_UVCVIDEO
+ #define __user
+-#include <linux/uvcvideo.h>
++#include "uvcvideo.h"
+ #endif
+ 
+ #ifndef UVC_CONTROL_SET_CUR
+diff --git a/libwebcam/dynctrl.c b/libwebcam/dynctrl.c
+index 37a9a35..d00c709 100644
+--- a/libwebcam/dynctrl.c
++++ b/libwebcam/dynctrl.c
+@@ -37,7 +37,7 @@
+ #include <stdarg.h>
+ #include <sys/ioctl.h>
+ #include <linux/videodev2.h>
+-#include <linux/usb/video.h>
++#include "video.h"
+ #include <errno.h>
+ #include <iconv.h>
+ 
+diff --git a/uvcdynctrl/main.c b/uvcdynctrl/main.c
+index b7befd1..f47f375 100644
+--- a/uvcdynctrl/main.c
++++ b/uvcdynctrl/main.c
+@@ -37,7 +37,7 @@
+ #include <linux/types.h>
+ 
+ #define __user
+-#include <linux/media.h>
++#include "media.h"
+ 
+ #include "config.h"
+ #include "cmdline.h"
+diff --git a/libwebcam/uvcvideo.h b/libwebcam/uvcvideo.h
+new file mode 100644
+index 0000000..f80f05b
+--- /dev/null
++++ b/libwebcam/uvcvideo.h
+@@ -0,0 +1,99 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++#ifndef __LINUX_UVCVIDEO_H_
++#define __LINUX_UVCVIDEO_H_
++
++#include <linux/ioctl.h>
++#include <linux/types.h>
++
++/*
++ * Dynamic controls
++ */
++
++/* Data types for UVC control data */
++#define UVC_CTRL_DATA_TYPE_RAW		0
++#define UVC_CTRL_DATA_TYPE_SIGNED	1
++#define UVC_CTRL_DATA_TYPE_UNSIGNED	2
++#define UVC_CTRL_DATA_TYPE_BOOLEAN	3
++#define UVC_CTRL_DATA_TYPE_ENUM		4
++#define UVC_CTRL_DATA_TYPE_BITMASK	5
++
++/* Control flags */
++#define UVC_CTRL_FLAG_SET_CUR		(1 << 0)
++#define UVC_CTRL_FLAG_GET_CUR		(1 << 1)
++#define UVC_CTRL_FLAG_GET_MIN		(1 << 2)
++#define UVC_CTRL_FLAG_GET_MAX		(1 << 3)
++#define UVC_CTRL_FLAG_GET_RES		(1 << 4)
++#define UVC_CTRL_FLAG_GET_DEF		(1 << 5)
++/* Control should be saved at suspend and restored at resume. */
++#define UVC_CTRL_FLAG_RESTORE		(1 << 6)
++/* Control can be updated by the camera. */
++#define UVC_CTRL_FLAG_AUTO_UPDATE	(1 << 7)
++/* Control supports asynchronous reporting */
++#define UVC_CTRL_FLAG_ASYNCHRONOUS	(1 << 8)
++
++#define UVC_CTRL_FLAG_GET_RANGE \
++	(UVC_CTRL_FLAG_GET_CUR | UVC_CTRL_FLAG_GET_MIN | \
++	 UVC_CTRL_FLAG_GET_MAX | UVC_CTRL_FLAG_GET_RES | \
++	 UVC_CTRL_FLAG_GET_DEF)
++
++struct uvc_menu_info {
++	__u32 value;
++	__u8 name[32];
++};
++
++struct uvc_xu_control_mapping {
++	__u32 id;
++	__u8 name[32];
++	__u8 entity[16];
++	__u8 selector;
++
++	__u8 size;
++	__u8 offset;
++	__u32 v4l2_type;
++	__u32 data_type;
++
++	struct uvc_menu_info __user *menu_info;
++	__u32 menu_count;
++
++	__u32 reserved[4];
++};
++
++struct uvc_xu_control_query {
++	__u8 unit;
++	__u8 selector;
++	__u8 query;		/* Video Class-Specific Request Code, */
++				/* defined in linux/usb/video.h A.8.  */
++	__u16 size;
++	__u8 __user *data;
++};
++
++#define UVCIOC_CTRL_MAP		_IOWR('u', 0x20, struct uvc_xu_control_mapping)
++#define UVCIOC_CTRL_QUERY	_IOWR('u', 0x21, struct uvc_xu_control_query)
++
++/*
++ * Metadata node
++ */
++
++/**
++ * struct uvc_meta_buf - metadata buffer building block
++ * @ns		- system timestamp of the payload in nanoseconds
++ * @sof		- USB Frame Number
++ * @length	- length of the payload header
++ * @flags	- payload header flags
++ * @buf		- optional device-specific header data
++ *
++ * UVC metadata nodes fill buffers with possibly multiple instances of this
++ * struct. The first two fields are added by the driver, they can be used for
++ * clock synchronisation. The rest is an exact copy of a UVC payload header.
++ * Only complete objects with complete buffers are included. Therefore it's
++ * always sizeof(meta->ts) + sizeof(meta->sof) + meta->length bytes large.
++ */
++struct uvc_meta_buf {
++	__u64 ns;
++	__u16 sof;
++	__u8 length;
++	__u8 flags;
++	__u8 buf[];
++} __packed;
++
++#endif
+diff --git a/libwebcam/video.h b/libwebcam/video.h
+new file mode 100644
+index 0000000..d854cb1
+--- /dev/null
++++ b/libwebcam/video.h
+@@ -0,0 +1,570 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++/*
++ * USB Video Class definitions.
++ *
++ * Copyright (C) 2009 Laurent Pinchart <laurent.pinchart@skynet.be>
++ *
++ * This file holds USB constants and structures defined by the USB Device
++ * Class Definition for Video Devices. Unless otherwise stated, comments
++ * below reference relevant sections of the USB Video Class 1.1 specification
++ * available at
++ *
++ * http://www.usb.org/developers/devclass_docs/USB_Video_Class_1_1.zip
++ */
++
++#ifndef __LINUX_USB_VIDEO_H
++#define __LINUX_USB_VIDEO_H
++
++#include <linux/types.h>
++
++/* --------------------------------------------------------------------------
++ * UVC constants
++ */
++
++/* A.2. Video Interface Subclass Codes */
++#define UVC_SC_UNDEFINED				0x00
++#define UVC_SC_VIDEOCONTROL				0x01
++#define UVC_SC_VIDEOSTREAMING				0x02
++#define UVC_SC_VIDEO_INTERFACE_COLLECTION		0x03
++
++/* A.3. Video Interface Protocol Codes */
++#define UVC_PC_PROTOCOL_UNDEFINED			0x00
++#define UVC_PC_PROTOCOL_15				0x01
++
++/* A.5. Video Class-Specific VC Interface Descriptor Subtypes */
++#define UVC_VC_DESCRIPTOR_UNDEFINED			0x00
++#define UVC_VC_HEADER					0x01
++#define UVC_VC_INPUT_TERMINAL				0x02
++#define UVC_VC_OUTPUT_TERMINAL				0x03
++#define UVC_VC_SELECTOR_UNIT				0x04
++#define UVC_VC_PROCESSING_UNIT				0x05
++#define UVC_VC_EXTENSION_UNIT				0x06
++
++/* A.6. Video Class-Specific VS Interface Descriptor Subtypes */
++#define UVC_VS_UNDEFINED				0x00
++#define UVC_VS_INPUT_HEADER				0x01
++#define UVC_VS_OUTPUT_HEADER				0x02
++#define UVC_VS_STILL_IMAGE_FRAME			0x03
++#define UVC_VS_FORMAT_UNCOMPRESSED			0x04
++#define UVC_VS_FRAME_UNCOMPRESSED			0x05
++#define UVC_VS_FORMAT_MJPEG				0x06
++#define UVC_VS_FRAME_MJPEG				0x07
++#define UVC_VS_FORMAT_MPEG2TS				0x0a
++#define UVC_VS_FORMAT_DV				0x0c
++#define UVC_VS_COLORFORMAT				0x0d
++#define UVC_VS_FORMAT_FRAME_BASED			0x10
++#define UVC_VS_FRAME_FRAME_BASED			0x11
++#define UVC_VS_FORMAT_STREAM_BASED			0x12
++
++/* A.7. Video Class-Specific Endpoint Descriptor Subtypes */
++#define UVC_EP_UNDEFINED				0x00
++#define UVC_EP_GENERAL					0x01
++#define UVC_EP_ENDPOINT					0x02
++#define UVC_EP_INTERRUPT				0x03
++
++/* A.8. Video Class-Specific Request Codes */
++#define UVC_RC_UNDEFINED				0x00
++#define UVC_SET_CUR					0x01
++#define UVC_GET_CUR					0x81
++#define UVC_GET_MIN					0x82
++#define UVC_GET_MAX					0x83
++#define UVC_GET_RES					0x84
++#define UVC_GET_LEN					0x85
++#define UVC_GET_INFO					0x86
++#define UVC_GET_DEF					0x87
++
++/* A.9.1. VideoControl Interface Control Selectors */
++#define UVC_VC_CONTROL_UNDEFINED			0x00
++#define UVC_VC_VIDEO_POWER_MODE_CONTROL			0x01
++#define UVC_VC_REQUEST_ERROR_CODE_CONTROL		0x02
++
++/* A.9.2. Terminal Control Selectors */
++#define UVC_TE_CONTROL_UNDEFINED			0x00
++
++/* A.9.3. Selector Unit Control Selectors */
++#define UVC_SU_CONTROL_UNDEFINED			0x00
++#define UVC_SU_INPUT_SELECT_CONTROL			0x01
++
++/* A.9.4. Camera Terminal Control Selectors */
++#define UVC_CT_CONTROL_UNDEFINED			0x00
++#define UVC_CT_SCANNING_MODE_CONTROL			0x01
++#define UVC_CT_AE_MODE_CONTROL				0x02
++#define UVC_CT_AE_PRIORITY_CONTROL			0x03
++#define UVC_CT_EXPOSURE_TIME_ABSOLUTE_CONTROL		0x04
++#define UVC_CT_EXPOSURE_TIME_RELATIVE_CONTROL		0x05
++#define UVC_CT_FOCUS_ABSOLUTE_CONTROL			0x06
++#define UVC_CT_FOCUS_RELATIVE_CONTROL			0x07
++#define UVC_CT_FOCUS_AUTO_CONTROL			0x08
++#define UVC_CT_IRIS_ABSOLUTE_CONTROL			0x09
++#define UVC_CT_IRIS_RELATIVE_CONTROL			0x0a
++#define UVC_CT_ZOOM_ABSOLUTE_CONTROL			0x0b
++#define UVC_CT_ZOOM_RELATIVE_CONTROL			0x0c
++#define UVC_CT_PANTILT_ABSOLUTE_CONTROL			0x0d
++#define UVC_CT_PANTILT_RELATIVE_CONTROL			0x0e
++#define UVC_CT_ROLL_ABSOLUTE_CONTROL			0x0f
++#define UVC_CT_ROLL_RELATIVE_CONTROL			0x10
++#define UVC_CT_PRIVACY_CONTROL				0x11
++
++/* A.9.5. Processing Unit Control Selectors */
++#define UVC_PU_CONTROL_UNDEFINED			0x00
++#define UVC_PU_BACKLIGHT_COMPENSATION_CONTROL		0x01
++#define UVC_PU_BRIGHTNESS_CONTROL			0x02
++#define UVC_PU_CONTRAST_CONTROL				0x03
++#define UVC_PU_GAIN_CONTROL				0x04
++#define UVC_PU_POWER_LINE_FREQUENCY_CONTROL		0x05
++#define UVC_PU_HUE_CONTROL				0x06
++#define UVC_PU_SATURATION_CONTROL			0x07
++#define UVC_PU_SHARPNESS_CONTROL			0x08
++#define UVC_PU_GAMMA_CONTROL				0x09
++#define UVC_PU_WHITE_BALANCE_TEMPERATURE_CONTROL	0x0a
++#define UVC_PU_WHITE_BALANCE_TEMPERATURE_AUTO_CONTROL	0x0b
++#define UVC_PU_WHITE_BALANCE_COMPONENT_CONTROL		0x0c
++#define UVC_PU_WHITE_BALANCE_COMPONENT_AUTO_CONTROL	0x0d
++#define UVC_PU_DIGITAL_MULTIPLIER_CONTROL		0x0e
++#define UVC_PU_DIGITAL_MULTIPLIER_LIMIT_CONTROL		0x0f
++#define UVC_PU_HUE_AUTO_CONTROL				0x10
++#define UVC_PU_ANALOG_VIDEO_STANDARD_CONTROL		0x11
++#define UVC_PU_ANALOG_LOCK_STATUS_CONTROL		0x12
++
++/* A.9.7. VideoStreaming Interface Control Selectors */
++#define UVC_VS_CONTROL_UNDEFINED			0x00
++#define UVC_VS_PROBE_CONTROL				0x01
++#define UVC_VS_COMMIT_CONTROL				0x02
++#define UVC_VS_STILL_PROBE_CONTROL			0x03
++#define UVC_VS_STILL_COMMIT_CONTROL			0x04
++#define UVC_VS_STILL_IMAGE_TRIGGER_CONTROL		0x05
++#define UVC_VS_STREAM_ERROR_CODE_CONTROL		0x06
++#define UVC_VS_GENERATE_KEY_FRAME_CONTROL		0x07
++#define UVC_VS_UPDATE_FRAME_SEGMENT_CONTROL		0x08
++#define UVC_VS_SYNC_DELAY_CONTROL			0x09
++
++/* B.1. USB Terminal Types */
++#define UVC_TT_VENDOR_SPECIFIC				0x0100
++#define UVC_TT_STREAMING				0x0101
++
++/* B.2. Input Terminal Types */
++#define UVC_ITT_VENDOR_SPECIFIC				0x0200
++#define UVC_ITT_CAMERA					0x0201
++#define UVC_ITT_MEDIA_TRANSPORT_INPUT			0x0202
++
++/* B.3. Output Terminal Types */
++#define UVC_OTT_VENDOR_SPECIFIC				0x0300
++#define UVC_OTT_DISPLAY					0x0301
++#define UVC_OTT_MEDIA_TRANSPORT_OUTPUT			0x0302
++
++/* B.4. External Terminal Types */
++#define UVC_EXTERNAL_VENDOR_SPECIFIC			0x0400
++#define UVC_COMPOSITE_CONNECTOR				0x0401
++#define UVC_SVIDEO_CONNECTOR				0x0402
++#define UVC_COMPONENT_CONNECTOR				0x0403
++
++/* 2.4.2.2. Status Packet Type */
++#define UVC_STATUS_TYPE_CONTROL				1
++#define UVC_STATUS_TYPE_STREAMING			2
++
++/* 2.4.3.3. Payload Header Information */
++#define UVC_STREAM_EOH					(1 << 7)
++#define UVC_STREAM_ERR					(1 << 6)
++#define UVC_STREAM_STI					(1 << 5)
++#define UVC_STREAM_RES					(1 << 4)
++#define UVC_STREAM_SCR					(1 << 3)
++#define UVC_STREAM_PTS					(1 << 2)
++#define UVC_STREAM_EOF					(1 << 1)
++#define UVC_STREAM_FID					(1 << 0)
++
++/* 4.1.2. Control Capabilities */
++#define UVC_CONTROL_CAP_GET				(1 << 0)
++#define UVC_CONTROL_CAP_SET				(1 << 1)
++#define UVC_CONTROL_CAP_DISABLED			(1 << 2)
++#define UVC_CONTROL_CAP_AUTOUPDATE			(1 << 3)
++#define UVC_CONTROL_CAP_ASYNCHRONOUS			(1 << 4)
++
++/* ------------------------------------------------------------------------
++ * UVC structures
++ */
++
++/* All UVC descriptors have these 3 fields at the beginning */
++struct uvc_descriptor_header {
++	__u8  bLength;
++	__u8  bDescriptorType;
++	__u8  bDescriptorSubType;
++} __attribute__((packed));
++
++/* 3.7.2. Video Control Interface Header Descriptor */
++struct uvc_header_descriptor {
++	__u8   bLength;
++	__u8   bDescriptorType;
++	__u8   bDescriptorSubType;
++	__le16 bcdUVC;
++	__le16 wTotalLength;
++	__le32 dwClockFrequency;
++	__u8   bInCollection;
++	__u8   baInterfaceNr[];
++} __attribute__((__packed__));
++
++#define UVC_DT_HEADER_SIZE(n)				(12+(n))
++
++#define UVC_HEADER_DESCRIPTOR(n) \
++	uvc_header_descriptor_##n
++
++#define DECLARE_UVC_HEADER_DESCRIPTOR(n)		\
++struct UVC_HEADER_DESCRIPTOR(n) {			\
++	__u8   bLength;					\
++	__u8   bDescriptorType;				\
++	__u8   bDescriptorSubType;			\
++	__le16 bcdUVC;					\
++	__le16 wTotalLength;				\
++	__le32 dwClockFrequency;			\
++	__u8   bInCollection;				\
++	__u8   baInterfaceNr[n];			\
++} __attribute__ ((packed))
++
++/* 3.7.2.1. Input Terminal Descriptor */
++struct uvc_input_terminal_descriptor {
++	__u8   bLength;
++	__u8   bDescriptorType;
++	__u8   bDescriptorSubType;
++	__u8   bTerminalID;
++	__le16 wTerminalType;
++	__u8   bAssocTerminal;
++	__u8   iTerminal;
++} __attribute__((__packed__));
++
++#define UVC_DT_INPUT_TERMINAL_SIZE			8
++
++/* 3.7.2.2. Output Terminal Descriptor */
++struct uvc_output_terminal_descriptor {
++	__u8   bLength;
++	__u8   bDescriptorType;
++	__u8   bDescriptorSubType;
++	__u8   bTerminalID;
++	__le16 wTerminalType;
++	__u8   bAssocTerminal;
++	__u8   bSourceID;
++	__u8   iTerminal;
++} __attribute__((__packed__));
++
++#define UVC_DT_OUTPUT_TERMINAL_SIZE			9
++
++/* 3.7.2.3. Camera Terminal Descriptor */
++struct uvc_camera_terminal_descriptor {
++	__u8   bLength;
++	__u8   bDescriptorType;
++	__u8   bDescriptorSubType;
++	__u8   bTerminalID;
++	__le16 wTerminalType;
++	__u8   bAssocTerminal;
++	__u8   iTerminal;
++	__le16 wObjectiveFocalLengthMin;
++	__le16 wObjectiveFocalLengthMax;
++	__le16 wOcularFocalLength;
++	__u8   bControlSize;
++	__u8   bmControls[3];
++} __attribute__((__packed__));
++
++#define UVC_DT_CAMERA_TERMINAL_SIZE(n)			(15+(n))
++
++/* 3.7.2.4. Selector Unit Descriptor */
++struct uvc_selector_unit_descriptor {
++	__u8  bLength;
++	__u8  bDescriptorType;
++	__u8  bDescriptorSubType;
++	__u8  bUnitID;
++	__u8  bNrInPins;
++	__u8  baSourceID[0];
++	__u8  iSelector;
++} __attribute__((__packed__));
++
++#define UVC_DT_SELECTOR_UNIT_SIZE(n)			(6+(n))
++
++#define UVC_SELECTOR_UNIT_DESCRIPTOR(n)	\
++	uvc_selector_unit_descriptor_##n
++
++#define DECLARE_UVC_SELECTOR_UNIT_DESCRIPTOR(n)	\
++struct UVC_SELECTOR_UNIT_DESCRIPTOR(n) {		\
++	__u8  bLength;					\
++	__u8  bDescriptorType;				\
++	__u8  bDescriptorSubType;			\
++	__u8  bUnitID;					\
++	__u8  bNrInPins;				\
++	__u8  baSourceID[n];				\
++	__u8  iSelector;				\
++} __attribute__ ((packed))
++
++/* 3.7.2.5. Processing Unit Descriptor */
++struct uvc_processing_unit_descriptor {
++	__u8   bLength;
++	__u8   bDescriptorType;
++	__u8   bDescriptorSubType;
++	__u8   bUnitID;
++	__u8   bSourceID;
++	__le16 wMaxMultiplier;
++	__u8   bControlSize;
++	__u8   bmControls[2];
++	__u8   iProcessing;
++} __attribute__((__packed__));
++
++#define UVC_DT_PROCESSING_UNIT_SIZE(n)			(9+(n))
++
++/* 3.7.2.6. Extension Unit Descriptor */
++struct uvc_extension_unit_descriptor {
++	__u8  bLength;
++	__u8  bDescriptorType;
++	__u8  bDescriptorSubType;
++	__u8  bUnitID;
++	__u8  guidExtensionCode[16];
++	__u8  bNumControls;
++	__u8  bNrInPins;
++	__u8  baSourceID[0];
++	__u8  bControlSize;
++	__u8  bmControls[0];
++	__u8  iExtension;
++} __attribute__((__packed__));
++
++#define UVC_DT_EXTENSION_UNIT_SIZE(p, n)		(24+(p)+(n))
++
++#define UVC_EXTENSION_UNIT_DESCRIPTOR(p, n) \
++	uvc_extension_unit_descriptor_##p_##n
++
++#define DECLARE_UVC_EXTENSION_UNIT_DESCRIPTOR(p, n)	\
++struct UVC_EXTENSION_UNIT_DESCRIPTOR(p, n) {		\
++	__u8  bLength;					\
++	__u8  bDescriptorType;				\
++	__u8  bDescriptorSubType;			\
++	__u8  bUnitID;					\
++	__u8  guidExtensionCode[16];			\
++	__u8  bNumControls;				\
++	__u8  bNrInPins;				\
++	__u8  baSourceID[p];				\
++	__u8  bControlSize;				\
++	__u8  bmControls[n];				\
++	__u8  iExtension;				\
++} __attribute__ ((packed))
++
++/* 3.8.2.2. Video Control Interrupt Endpoint Descriptor */
++struct uvc_control_endpoint_descriptor {
++	__u8   bLength;
++	__u8   bDescriptorType;
++	__u8   bDescriptorSubType;
++	__le16 wMaxTransferSize;
++} __attribute__((__packed__));
++
++#define UVC_DT_CONTROL_ENDPOINT_SIZE			5
++
++/* 3.9.2.1. Input Header Descriptor */
++struct uvc_input_header_descriptor {
++	__u8   bLength;
++	__u8   bDescriptorType;
++	__u8   bDescriptorSubType;
++	__u8   bNumFormats;
++	__le16 wTotalLength;
++	__u8   bEndpointAddress;
++	__u8   bmInfo;
++	__u8   bTerminalLink;
++	__u8   bStillCaptureMethod;
++	__u8   bTriggerSupport;
++	__u8   bTriggerUsage;
++	__u8   bControlSize;
++	__u8   bmaControls[];
++} __attribute__((__packed__));
++
++#define UVC_DT_INPUT_HEADER_SIZE(n, p)			(13+(n*p))
++
++#define UVC_INPUT_HEADER_DESCRIPTOR(n, p) \
++	uvc_input_header_descriptor_##n_##p
++
++#define DECLARE_UVC_INPUT_HEADER_DESCRIPTOR(n, p)	\
++struct UVC_INPUT_HEADER_DESCRIPTOR(n, p) {		\
++	__u8   bLength;					\
++	__u8   bDescriptorType;				\
++	__u8   bDescriptorSubType;			\
++	__u8   bNumFormats;				\
++	__le16 wTotalLength;				\
++	__u8   bEndpointAddress;			\
++	__u8   bmInfo;					\
++	__u8   bTerminalLink;				\
++	__u8   bStillCaptureMethod;			\
++	__u8   bTriggerSupport;				\
++	__u8   bTriggerUsage;				\
++	__u8   bControlSize;				\
++	__u8   bmaControls[p][n];			\
++} __attribute__ ((packed))
++
++/* 3.9.2.2. Output Header Descriptor */
++struct uvc_output_header_descriptor {
++	__u8   bLength;
++	__u8   bDescriptorType;
++	__u8   bDescriptorSubType;
++	__u8   bNumFormats;
++	__le16 wTotalLength;
++	__u8   bEndpointAddress;
++	__u8   bTerminalLink;
++	__u8   bControlSize;
++	__u8   bmaControls[];
++} __attribute__((__packed__));
++
++#define UVC_DT_OUTPUT_HEADER_SIZE(n, p)			(9+(n*p))
++
++#define UVC_OUTPUT_HEADER_DESCRIPTOR(n, p) \
++	uvc_output_header_descriptor_##n_##p
++
++#define DECLARE_UVC_OUTPUT_HEADER_DESCRIPTOR(n, p)	\
++struct UVC_OUTPUT_HEADER_DESCRIPTOR(n, p) {		\
++	__u8   bLength;					\
++	__u8   bDescriptorType;				\
++	__u8   bDescriptorSubType;			\
++	__u8   bNumFormats;				\
++	__le16 wTotalLength;				\
++	__u8   bEndpointAddress;			\
++	__u8   bTerminalLink;				\
++	__u8   bControlSize;				\
++	__u8   bmaControls[p][n];			\
++} __attribute__ ((packed))
++
++/* 3.9.2.6. Color matching descriptor */
++struct uvc_color_matching_descriptor {
++	__u8  bLength;
++	__u8  bDescriptorType;
++	__u8  bDescriptorSubType;
++	__u8  bColorPrimaries;
++	__u8  bTransferCharacteristics;
++	__u8  bMatrixCoefficients;
++} __attribute__((__packed__));
++
++#define UVC_DT_COLOR_MATCHING_SIZE			6
++
++/* 4.3.1.1. Video Probe and Commit Controls */
++struct uvc_streaming_control {
++	__u16 bmHint;
++	__u8  bFormatIndex;
++	__u8  bFrameIndex;
++	__u32 dwFrameInterval;
++	__u16 wKeyFrameRate;
++	__u16 wPFrameRate;
++	__u16 wCompQuality;
++	__u16 wCompWindowSize;
++	__u16 wDelay;
++	__u32 dwMaxVideoFrameSize;
++	__u32 dwMaxPayloadTransferSize;
++	__u32 dwClockFrequency;
++	__u8  bmFramingInfo;
++	__u8  bPreferedVersion;
++	__u8  bMinVersion;
++	__u8  bMaxVersion;
++} __attribute__((__packed__));
++
++/* Uncompressed Payload - 3.1.1. Uncompressed Video Format Descriptor */
++struct uvc_format_uncompressed {
++	__u8  bLength;
++	__u8  bDescriptorType;
++	__u8  bDescriptorSubType;
++	__u8  bFormatIndex;
++	__u8  bNumFrameDescriptors;
++	__u8  guidFormat[16];
++	__u8  bBitsPerPixel;
++	__u8  bDefaultFrameIndex;
++	__u8  bAspectRatioX;
++	__u8  bAspectRatioY;
++	__u8  bmInterfaceFlags;
++	__u8  bCopyProtect;
++} __attribute__((__packed__));
++
++#define UVC_DT_FORMAT_UNCOMPRESSED_SIZE			27
++
++/* Uncompressed Payload - 3.1.2. Uncompressed Video Frame Descriptor */
++struct uvc_frame_uncompressed {
++	__u8   bLength;
++	__u8   bDescriptorType;
++	__u8   bDescriptorSubType;
++	__u8   bFrameIndex;
++	__u8   bmCapabilities;
++	__le16 wWidth;
++	__le16 wHeight;
++	__le32 dwMinBitRate;
++	__le32 dwMaxBitRate;
++	__le32 dwMaxVideoFrameBufferSize;
++	__le32 dwDefaultFrameInterval;
++	__u8   bFrameIntervalType;
++	__le32 dwFrameInterval[];
++} __attribute__((__packed__));
++
++#define UVC_DT_FRAME_UNCOMPRESSED_SIZE(n)		(26+4*(n))
++
++#define UVC_FRAME_UNCOMPRESSED(n) \
++	uvc_frame_uncompressed_##n
++
++#define DECLARE_UVC_FRAME_UNCOMPRESSED(n)		\
++struct UVC_FRAME_UNCOMPRESSED(n) {			\
++	__u8   bLength;					\
++	__u8   bDescriptorType;				\
++	__u8   bDescriptorSubType;			\
++	__u8   bFrameIndex;				\
++	__u8   bmCapabilities;				\
++	__le16 wWidth;					\
++	__le16 wHeight;					\
++	__le32 dwMinBitRate;				\
++	__le32 dwMaxBitRate;				\
++	__le32 dwMaxVideoFrameBufferSize;		\
++	__le32 dwDefaultFrameInterval;			\
++	__u8   bFrameIntervalType;			\
++	__le32 dwFrameInterval[n];			\
++} __attribute__ ((packed))
++
++/* MJPEG Payload - 3.1.1. MJPEG Video Format Descriptor */
++struct uvc_format_mjpeg {
++	__u8  bLength;
++	__u8  bDescriptorType;
++	__u8  bDescriptorSubType;
++	__u8  bFormatIndex;
++	__u8  bNumFrameDescriptors;
++	__u8  bmFlags;
++	__u8  bDefaultFrameIndex;
++	__u8  bAspectRatioX;
++	__u8  bAspectRatioY;
++	__u8  bmInterfaceFlags;
++	__u8  bCopyProtect;
++} __attribute__((__packed__));
++
++#define UVC_DT_FORMAT_MJPEG_SIZE			11
++
++/* MJPEG Payload - 3.1.2. MJPEG Video Frame Descriptor */
++struct uvc_frame_mjpeg {
++	__u8   bLength;
++	__u8   bDescriptorType;
++	__u8   bDescriptorSubType;
++	__u8   bFrameIndex;
++	__u8   bmCapabilities;
++	__le16 wWidth;
++	__le16 wHeight;
++	__le32 dwMinBitRate;
++	__le32 dwMaxBitRate;
++	__le32 dwMaxVideoFrameBufferSize;
++	__le32 dwDefaultFrameInterval;
++	__u8   bFrameIntervalType;
++	__le32 dwFrameInterval[];
++} __attribute__((__packed__));
++
++#define UVC_DT_FRAME_MJPEG_SIZE(n)			(26+4*(n))
++
++#define UVC_FRAME_MJPEG(n) \
++	uvc_frame_mjpeg_##n
++
++#define DECLARE_UVC_FRAME_MJPEG(n)			\
++struct UVC_FRAME_MJPEG(n) {				\
++	__u8   bLength;					\
++	__u8   bDescriptorType;				\
++	__u8   bDescriptorSubType;			\
++	__u8   bFrameIndex;				\
++	__u8   bmCapabilities;				\
++	__le16 wWidth;					\
++	__le16 wHeight;					\
++	__le32 dwMinBitRate;				\
++	__le32 dwMaxBitRate;				\
++	__le32 dwMaxVideoFrameBufferSize;		\
++	__le32 dwDefaultFrameInterval;			\
++	__u8   bFrameIntervalType;			\
++	__le32 dwFrameInterval[n];			\
++} __attribute__ ((packed))
++
++#endif /* __LINUX_USB_VIDEO_H */
++
+diff --git a/uvcdynctrl/media.h b/uvcdynctrl/media.h
+new file mode 100644
+index 0000000..383ac7b
+--- /dev/null
++++ b/uvcdynctrl/media.h
+@@ -0,0 +1,440 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++/*
++ * Multimedia device API
++ *
++ * Copyright (C) 2010 Nokia Corporation
++ *
++ * Contacts: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
++ *	     Sakari Ailus <sakari.ailus@iki.fi>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ */
++
++#ifndef __LINUX_MEDIA_H
++#define __LINUX_MEDIA_H
++
++#ifndef __KERNEL__
++#include <stdint.h>
++#endif
++#include <linux/ioctl.h>
++#include <linux/types.h>
++
++struct media_device_info {
++	char driver[16];
++	char model[32];
++	char serial[40];
++	char bus_info[32];
++	__u32 media_version;
++	__u32 hw_revision;
++	__u32 driver_version;
++	__u32 reserved[31];
++};
++
++/*
++ * Base number ranges for entity functions
++ *
++ * NOTE: Userspace should not rely on these ranges to identify a group
++ * of function types, as newer functions can be added with any name within
++ * the full u32 range.
++ *
++ * Some older functions use the MEDIA_ENT_F_OLD_*_BASE range. Do not
++ * change this, this is for backwards compatibility. When adding new
++ * functions always use MEDIA_ENT_F_BASE.
++ */
++#define MEDIA_ENT_F_BASE			0x00000000
++#define MEDIA_ENT_F_OLD_BASE			0x00010000
++#define MEDIA_ENT_F_OLD_SUBDEV_BASE		0x00020000
++
++/*
++ * Initial value to be used when a new entity is created
++ * Drivers should change it to something useful.
++ */
++#define MEDIA_ENT_F_UNKNOWN			MEDIA_ENT_F_BASE
++
++/*
++ * Subdevs are initialized with MEDIA_ENT_F_V4L2_SUBDEV_UNKNOWN in order
++ * to preserve backward compatibility. Drivers must change to the proper
++ * subdev type before registering the entity.
++ */
++#define MEDIA_ENT_F_V4L2_SUBDEV_UNKNOWN		MEDIA_ENT_F_OLD_SUBDEV_BASE
++
++/*
++ * DVB entity functions
++ */
++#define MEDIA_ENT_F_DTV_DEMOD			(MEDIA_ENT_F_BASE + 0x00001)
++#define MEDIA_ENT_F_TS_DEMUX			(MEDIA_ENT_F_BASE + 0x00002)
++#define MEDIA_ENT_F_DTV_CA			(MEDIA_ENT_F_BASE + 0x00003)
++#define MEDIA_ENT_F_DTV_NET_DECAP		(MEDIA_ENT_F_BASE + 0x00004)
++
++/*
++ * I/O entity functions
++ */
++#define MEDIA_ENT_F_IO_V4L			(MEDIA_ENT_F_OLD_BASE + 1)
++#define MEDIA_ENT_F_IO_DTV			(MEDIA_ENT_F_BASE + 0x01001)
++#define MEDIA_ENT_F_IO_VBI			(MEDIA_ENT_F_BASE + 0x01002)
++#define MEDIA_ENT_F_IO_SWRADIO			(MEDIA_ENT_F_BASE + 0x01003)
++
++/*
++ * Sensor functions
++ */
++#define MEDIA_ENT_F_CAM_SENSOR			(MEDIA_ENT_F_OLD_SUBDEV_BASE + 1)
++#define MEDIA_ENT_F_FLASH			(MEDIA_ENT_F_OLD_SUBDEV_BASE + 2)
++#define MEDIA_ENT_F_LENS			(MEDIA_ENT_F_OLD_SUBDEV_BASE + 3)
++
++/*
++ * Digital TV, analog TV, radio and/or software defined radio tuner functions.
++ *
++ * It is a responsibility of the master/bridge drivers to add connectors
++ * and links for MEDIA_ENT_F_TUNER. Please notice that some old tuners
++ * may require the usage of separate I2C chips to decode analog TV signals,
++ * when the master/bridge chipset doesn't have its own TV standard decoder.
++ * On such cases, the IF-PLL staging is mapped via one or two entities:
++ * MEDIA_ENT_F_IF_VID_DECODER and/or MEDIA_ENT_F_IF_AUD_DECODER.
++ */
++#define MEDIA_ENT_F_TUNER			(MEDIA_ENT_F_OLD_SUBDEV_BASE + 5)
++
++/*
++ * Analog TV IF-PLL decoder functions
++ *
++ * It is a responsibility of the master/bridge drivers to create links
++ * for MEDIA_ENT_F_IF_VID_DECODER and MEDIA_ENT_F_IF_AUD_DECODER.
++ */
++#define MEDIA_ENT_F_IF_VID_DECODER		(MEDIA_ENT_F_BASE + 0x02001)
++#define MEDIA_ENT_F_IF_AUD_DECODER		(MEDIA_ENT_F_BASE + 0x02002)
++
++/*
++ * Audio entity functions
++ */
++#define MEDIA_ENT_F_AUDIO_CAPTURE		(MEDIA_ENT_F_BASE + 0x03001)
++#define MEDIA_ENT_F_AUDIO_PLAYBACK		(MEDIA_ENT_F_BASE + 0x03002)
++#define MEDIA_ENT_F_AUDIO_MIXER			(MEDIA_ENT_F_BASE + 0x03003)
++
++/*
++ * Processing entity functions
++ */
++#define MEDIA_ENT_F_PROC_VIDEO_COMPOSER		(MEDIA_ENT_F_BASE + 0x4001)
++#define MEDIA_ENT_F_PROC_VIDEO_PIXEL_FORMATTER	(MEDIA_ENT_F_BASE + 0x4002)
++#define MEDIA_ENT_F_PROC_VIDEO_PIXEL_ENC_CONV	(MEDIA_ENT_F_BASE + 0x4003)
++#define MEDIA_ENT_F_PROC_VIDEO_LUT		(MEDIA_ENT_F_BASE + 0x4004)
++#define MEDIA_ENT_F_PROC_VIDEO_SCALER		(MEDIA_ENT_F_BASE + 0x4005)
++#define MEDIA_ENT_F_PROC_VIDEO_STATISTICS	(MEDIA_ENT_F_BASE + 0x4006)
++#define MEDIA_ENT_F_PROC_VIDEO_ENCODER		(MEDIA_ENT_F_BASE + 0x4007)
++#define MEDIA_ENT_F_PROC_VIDEO_DECODER		(MEDIA_ENT_F_BASE + 0x4008)
++
++/*
++ * Switch and bridge entity functions
++ */
++#define MEDIA_ENT_F_VID_MUX			(MEDIA_ENT_F_BASE + 0x5001)
++#define MEDIA_ENT_F_VID_IF_BRIDGE		(MEDIA_ENT_F_BASE + 0x5002)
++
++/*
++ * Video decoder/encoder functions
++ */
++#define MEDIA_ENT_F_ATV_DECODER			(MEDIA_ENT_F_OLD_SUBDEV_BASE + 4)
++#define MEDIA_ENT_F_DV_DECODER			(MEDIA_ENT_F_BASE + 0x6001)
++#define MEDIA_ENT_F_DV_ENCODER			(MEDIA_ENT_F_BASE + 0x6002)
++
++/* Entity flags */
++#define MEDIA_ENT_FL_DEFAULT			(1 << 0)
++#define MEDIA_ENT_FL_CONNECTOR			(1 << 1)
++
++/* OR with the entity id value to find the next entity */
++#define MEDIA_ENT_ID_FLAG_NEXT			(1U << 31)
++
++struct media_entity_desc {
++	__u32 id;
++	char name[32];
++	__u32 type;
++	__u32 revision;
++	__u32 flags;
++	__u32 group_id;
++	__u16 pads;
++	__u16 links;
++
++	__u32 reserved[4];
++
++	union {
++		/* Node specifications */
++		struct {
++			__u32 major;
++			__u32 minor;
++		} dev;
++
++#if !defined(__KERNEL__)
++		/*
++		 * TODO: this shouldn't have been added without
++		 * actual drivers that use this. When the first real driver
++		 * appears that sets this information, special attention
++		 * should be given whether this information is 1) enough, and
++		 * 2) can deal with udev rules that rename devices. The struct
++		 * dev would not be sufficient for this since that does not
++		 * contain the subdevice information. In addition, struct dev
++		 * can only refer to a single device, and not to multiple (e.g.
++		 * pcm and mixer devices).
++		 */
++		struct {
++			__u32 card;
++			__u32 device;
++			__u32 subdevice;
++		} alsa;
++
++		/*
++		 * DEPRECATED: previous node specifications. Kept just to
++		 * avoid breaking compilation. Use media_entity_desc.dev
++		 * instead.
++		 */
++		struct {
++			__u32 major;
++			__u32 minor;
++		} v4l;
++		struct {
++			__u32 major;
++			__u32 minor;
++		} fb;
++		int dvb;
++#endif
++
++		/* Sub-device specifications */
++		/* Nothing needed yet */
++		__u8 raw[184];
++	};
++};
++
++#define MEDIA_PAD_FL_SINK			(1 << 0)
++#define MEDIA_PAD_FL_SOURCE			(1 << 1)
++#define MEDIA_PAD_FL_MUST_CONNECT		(1 << 2)
++
++struct media_pad_desc {
++	__u32 entity;		/* entity ID */
++	__u16 index;		/* pad index */
++	__u32 flags;		/* pad flags */
++	__u32 reserved[2];
++};
++
++#define MEDIA_LNK_FL_ENABLED			(1 << 0)
++#define MEDIA_LNK_FL_IMMUTABLE			(1 << 1)
++#define MEDIA_LNK_FL_DYNAMIC			(1 << 2)
++
++#define MEDIA_LNK_FL_LINK_TYPE			(0xf << 28)
++#  define MEDIA_LNK_FL_DATA_LINK		(0 << 28)
++#  define MEDIA_LNK_FL_INTERFACE_LINK		(1 << 28)
++
++struct media_link_desc {
++	struct media_pad_desc source;
++	struct media_pad_desc sink;
++	__u32 flags;
++	__u32 reserved[2];
++};
++
++struct media_links_enum {
++	__u32 entity;
++	/* Should have enough room for pads elements */
++	struct media_pad_desc __user *pads;
++	/* Should have enough room for links elements */
++	struct media_link_desc __user *links;
++	__u32 reserved[4];
++};
++
++/* Interface type ranges */
++
++#define MEDIA_INTF_T_DVB_BASE			0x00000100
++#define MEDIA_INTF_T_V4L_BASE			0x00000200
++
++/* Interface types */
++
++#define MEDIA_INTF_T_DVB_FE			(MEDIA_INTF_T_DVB_BASE)
++#define MEDIA_INTF_T_DVB_DEMUX			(MEDIA_INTF_T_DVB_BASE + 1)
++#define MEDIA_INTF_T_DVB_DVR			(MEDIA_INTF_T_DVB_BASE + 2)
++#define MEDIA_INTF_T_DVB_CA			(MEDIA_INTF_T_DVB_BASE + 3)
++#define MEDIA_INTF_T_DVB_NET			(MEDIA_INTF_T_DVB_BASE + 4)
++
++#define MEDIA_INTF_T_V4L_VIDEO			(MEDIA_INTF_T_V4L_BASE)
++#define MEDIA_INTF_T_V4L_VBI			(MEDIA_INTF_T_V4L_BASE + 1)
++#define MEDIA_INTF_T_V4L_RADIO			(MEDIA_INTF_T_V4L_BASE + 2)
++#define MEDIA_INTF_T_V4L_SUBDEV			(MEDIA_INTF_T_V4L_BASE + 3)
++#define MEDIA_INTF_T_V4L_SWRADIO		(MEDIA_INTF_T_V4L_BASE + 4)
++#define MEDIA_INTF_T_V4L_TOUCH			(MEDIA_INTF_T_V4L_BASE + 5)
++
++#define MEDIA_INTF_T_ALSA_BASE			0x00000300
++#define MEDIA_INTF_T_ALSA_PCM_CAPTURE		(MEDIA_INTF_T_ALSA_BASE)
++#define MEDIA_INTF_T_ALSA_PCM_PLAYBACK		(MEDIA_INTF_T_ALSA_BASE + 1)
++#define MEDIA_INTF_T_ALSA_CONTROL		(MEDIA_INTF_T_ALSA_BASE + 2)
++
++#if defined(__KERNEL__)
++
++/*
++ * Connector functions
++ *
++ * For now these should not be used in userspace, as some definitions may
++ * change.
++ *
++ * It is the responsibility of the entity drivers to add connectors and links.
++ */
++#define MEDIA_ENT_F_CONN_RF			(MEDIA_ENT_F_BASE + 0x30001)
++#define MEDIA_ENT_F_CONN_SVIDEO			(MEDIA_ENT_F_BASE + 0x30002)
++#define MEDIA_ENT_F_CONN_COMPOSITE		(MEDIA_ENT_F_BASE + 0x30003)
++
++#endif
++
++/*
++ * MC next gen API definitions
++ */
++
++/*
++ * Appeared in 4.19.0.
++ *
++ * The media_version argument comes from the media_version field in
++ * struct media_device_info.
++ */
++#define MEDIA_V2_ENTITY_HAS_FLAGS(media_version) \
++	((media_version) >= ((4 << 16) | (19 << 8) | 0))
++
++struct media_v2_entity {
++	__u32 id;
++	char name[64];
++	__u32 function;		/* Main function of the entity */
++	__u32 flags;
++	__u32 reserved[5];
++} __attribute__ ((packed));
++
++/* Should match the specific fields at media_intf_devnode */
++struct media_v2_intf_devnode {
++	__u32 major;
++	__u32 minor;
++} __attribute__ ((packed));
++
++struct media_v2_interface {
++	__u32 id;
++	__u32 intf_type;
++	__u32 flags;
++	__u32 reserved[9];
++
++	union {
++		struct media_v2_intf_devnode devnode;
++		__u32 raw[16];
++	};
++} __attribute__ ((packed));
++
++/*
++ * Appeared in 4.19.0.
++ *
++ * The media_version argument comes from the media_version field in
++ * struct media_device_info.
++ */
++#define MEDIA_V2_PAD_HAS_INDEX(media_version) \
++	((media_version) >= ((4 << 16) | (19 << 8) | 0))
++
++struct media_v2_pad {
++	__u32 id;
++	__u32 entity_id;
++	__u32 flags;
++	__u32 index;
++	__u32 reserved[4];
++} __attribute__ ((packed));
++
++struct media_v2_link {
++	__u32 id;
++	__u32 source_id;
++	__u32 sink_id;
++	__u32 flags;
++	__u32 reserved[6];
++} __attribute__ ((packed));
++
++struct media_v2_topology {
++	__u64 topology_version;
++
++	__u32 num_entities;
++	__u32 reserved1;
++	__u64 ptr_entities;
++
++	__u32 num_interfaces;
++	__u32 reserved2;
++	__u64 ptr_interfaces;
++
++	__u32 num_pads;
++	__u32 reserved3;
++	__u64 ptr_pads;
++
++	__u32 num_links;
++	__u32 reserved4;
++	__u64 ptr_links;
++} __attribute__ ((packed));
++
++/* ioctls */
++
++#define MEDIA_IOC_DEVICE_INFO	_IOWR('|', 0x00, struct media_device_info)
++#define MEDIA_IOC_ENUM_ENTITIES	_IOWR('|', 0x01, struct media_entity_desc)
++#define MEDIA_IOC_ENUM_LINKS	_IOWR('|', 0x02, struct media_links_enum)
++#define MEDIA_IOC_SETUP_LINK	_IOWR('|', 0x03, struct media_link_desc)
++#define MEDIA_IOC_G_TOPOLOGY	_IOWR('|', 0x04, struct media_v2_topology)
++#define MEDIA_IOC_REQUEST_ALLOC	_IOR ('|', 0x05, int)
++
++/*
++ * These ioctls are called on the request file descriptor as returned
++ * by MEDIA_IOC_REQUEST_ALLOC.
++ */
++#define MEDIA_REQUEST_IOC_QUEUE		_IO('|',  0x80)
++#define MEDIA_REQUEST_IOC_REINIT	_IO('|',  0x81)
++
++#ifndef __KERNEL__
++
++/*
++ * Legacy symbols used to avoid userspace compilation breakages.
++ * Do not use any of this in new applications!
++ *
++ * Those symbols map the entity function into types and should be
++ * used only on legacy programs for legacy hardware. Don't rely
++ * on those for MEDIA_IOC_G_TOPOLOGY.
++ */
++#define MEDIA_ENT_TYPE_SHIFT			16
++#define MEDIA_ENT_TYPE_MASK			0x00ff0000
++#define MEDIA_ENT_SUBTYPE_MASK			0x0000ffff
++
++#define MEDIA_ENT_T_DEVNODE_UNKNOWN		(MEDIA_ENT_F_OLD_BASE | \
++						 MEDIA_ENT_SUBTYPE_MASK)
++
++#define MEDIA_ENT_T_DEVNODE			MEDIA_ENT_F_OLD_BASE
++#define MEDIA_ENT_T_DEVNODE_V4L			MEDIA_ENT_F_IO_V4L
++#define MEDIA_ENT_T_DEVNODE_FB			(MEDIA_ENT_F_OLD_BASE + 2)
++#define MEDIA_ENT_T_DEVNODE_ALSA		(MEDIA_ENT_F_OLD_BASE + 3)
++#define MEDIA_ENT_T_DEVNODE_DVB			(MEDIA_ENT_F_OLD_BASE + 4)
++
++#define MEDIA_ENT_T_UNKNOWN			MEDIA_ENT_F_UNKNOWN
++#define MEDIA_ENT_T_V4L2_VIDEO			MEDIA_ENT_F_IO_V4L
++#define MEDIA_ENT_T_V4L2_SUBDEV			MEDIA_ENT_F_V4L2_SUBDEV_UNKNOWN
++#define MEDIA_ENT_T_V4L2_SUBDEV_SENSOR		MEDIA_ENT_F_CAM_SENSOR
++#define MEDIA_ENT_T_V4L2_SUBDEV_FLASH		MEDIA_ENT_F_FLASH
++#define MEDIA_ENT_T_V4L2_SUBDEV_LENS		MEDIA_ENT_F_LENS
++#define MEDIA_ENT_T_V4L2_SUBDEV_DECODER		MEDIA_ENT_F_ATV_DECODER
++#define MEDIA_ENT_T_V4L2_SUBDEV_TUNER		MEDIA_ENT_F_TUNER
++
++#define MEDIA_ENT_F_DTV_DECODER			MEDIA_ENT_F_DV_DECODER
++
++/*
++ * There is still no full ALSA support in the media controller. These
++ * defines should not have been added and we leave them here only
++ * in case some application tries to use these defines.
++ *
++ * The ALSA defines that are in use have been moved into __KERNEL__
++ * scope. As support gets added to these interface types, they should
++ * be moved into __KERNEL__ scope with the code that uses them.
++ */
++#define MEDIA_INTF_T_ALSA_COMPRESS             (MEDIA_INTF_T_ALSA_BASE + 3)
++#define MEDIA_INTF_T_ALSA_RAWMIDI              (MEDIA_INTF_T_ALSA_BASE + 4)
++#define MEDIA_INTF_T_ALSA_HWDEP                (MEDIA_INTF_T_ALSA_BASE + 5)
++#define MEDIA_INTF_T_ALSA_SEQUENCER            (MEDIA_INTF_T_ALSA_BASE + 6)
++#define MEDIA_INTF_T_ALSA_TIMER                (MEDIA_INTF_T_ALSA_BASE + 7)
++
++/* Obsolete symbol for media_version, no longer used in the kernel */
++#define MEDIA_API_VERSION			((0 << 16) | (1 << 8) | 0)
++
++#endif
++
++#endif /* __LINUX_MEDIA_H */
