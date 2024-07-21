@@ -1,42 +1,28 @@
---- a/cmds/filesystem.c
-+++ b/cmds/filesystem.c
-@@ -1558,6 +1558,11 @@ static int cmd_filesystem_mkswapfile(con
- 		ret = 1;
- 		goto out;
- 	}
-+/* FS_NOCOW_FL since Linux 2.6.39 */
+--- a/mkfs/main.c
++++ b/mkfs/main.c
+@@ -59,6 +59,10 @@
+ #include "mkfs/common.h"
+ #include "mkfs/rootdir.h"
+ 
 +#ifndef LINUX_VERSION_CODE
 +#include <linux/version.h>
 +#endif
-+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,39)
- 	pr_verbose(LOG_INFO, "set NOCOW attribute\n");
- 	flags = FS_NOCOW_FL;
- 	ret = ioctl(fd, FS_IOC_SETFLAGS, &flags);
-@@ -1566,6 +1571,7 @@ static int cmd_filesystem_mkswapfile(con
- 		ret = 1;
- 		goto out;
++
+ struct mkfs_allocation {
+ 	u64 data;
+ 	u64 metadata;
+@@ -1472,11 +1476,14 @@ int BOX_MAIN(mkfs)(int argc, char **argv
+ 	if (ret)
+ 		goto error;
+ 
++/* <linux/blkzoned.h> since Linux 4.10 */
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,10,0)
+ 	if (opt_zoned && (!zoned_profile_supported(BTRFS_BLOCK_GROUP_METADATA | metadata_profile) ||
+ 		      !zoned_profile_supported(BTRFS_BLOCK_GROUP_DATA | data_profile))) {
+ 		error("zoned mode does not yet support RAID/DUP profiles, please specify '-d single -m single' manually");
+ 		goto error;
  	}
-+#endif /* FS_NOCOW_FL since Linux 2.6.39 */
- 	page_count = size / SZ_4K;
- 	if (page_count <= 10) {
- 		error("file too short");
---- a/cmds/inspect.c
-+++ b/cmds/inspect.c
-@@ -1574,11 +1574,17 @@ static int cmd_inspect_map_swapfile(cons
- 		ret = 1;
- 		goto out;
- 	}
-+/* FS_NOCOW_FL since Linux 2.6.39 */
-+#ifndef LINUX_VERSION_CODE
-+#include <linux/version.h>
-+#endif
-+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,39)
- 	if (!(flags & FS_NOCOW_FL)) {
- 		error("file is not NOCOW");
- 		ret = 1;
- 		goto out;
- 	}
-+#endif /* FS_NOCOW_FL since Linux 2.6.39 */
- 	if (flags & FS_COMPR_FL) {
- 		error("file with COMP attribute");
- 		ret = 1;
++#endif /* <linux/blkzoned.h> since Linux 4.10 */
+ 
+ 	t_prepare = calloc(device_count, sizeof(*t_prepare));
+ 	prepare_ctx = calloc(device_count, sizeof(*prepare_ctx));
