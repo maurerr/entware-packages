@@ -136,12 +136,15 @@ define Package/libunbound/config
 		default n
 	config PACKAGE_libunbound_ipset
 		bool "Build with IPSET (libmnl) support."
+		depends on !LINUX_2_6_36
 		default y
 	config PACKAGE_libunbound_libevent
 		bool "Build with expanded network resource (libevent) support."
+		depends on !LINUX_2_6_36
 		default y
 	config PACKAGE_libunbound_libpthread
 		bool "Build with POSIX threading (libpthread) support."
+		depends on !LINUX_2_6_36
 		default y
 	config PACKAGE_libunbound_nghttp2
 		bool "Build with DNS over HTTPS support (nghttp2 framework)."
