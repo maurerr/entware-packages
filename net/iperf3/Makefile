@@ -66,6 +66,12 @@ else
 	CONFIGURE_ARGS += --without-openssl
 endif
 
+# XXX TCP_USER_TIMEOUT sockopt (believed to be Linux 2.6.37+ only)
+ifeq ($(CONFIG_LINUX_2_6_36),y)
+CONFIGURE_VARS += \
+	iperf3_cv_header_tcp_user_timeout=no
+endif
+
 MAKE_FLAGS += noinst_PROGRAMS=
 
 define Package/iperf3/description
