@@ -46,6 +46,11 @@ CMAKE_OPTIONS += \
 	-DBUILD_STATIC_LIBS=OFF \
 	-DBUILD_TOOLS=OFF
 
+ifeq ($(CONFIG_LINUX_2_6_36),y)
+CMAKE_OPTIONS += \
+	-DNFC_LINUX=OFF
+endif
+
 define Package/libfido2/install
 	$(INSTALL_DIR) $(1)/opt/lib
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libfido2.so.* $(1)/opt/lib/
