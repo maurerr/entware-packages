@@ -1,5 +1,5 @@
---- include/ntpd.h      2024-05-07 11:21:01.000000000 +0000
-+++ include/patched_ntpd.h      2024-07-23 07:34:14.111057645 +0000
+--- include/ntpd.h
++++ include/ntpd.h
 @@ -100,6 +100,7 @@
  #define DEF            0x20
  #define        PADDING         0x40
