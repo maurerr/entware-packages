@@ -1,12 +1,24 @@
+From b57741495d5fb4460488e5152b2127a4760bf99c Mon Sep 17 00:00:00 2001
+From: Your Name <you@example.com>
+Date: Tue, 23 Jul 2024 08:54:18 +0000
+Subject: [PATCH] include/ntpd.h
+
+---
+ include/ntpd.h | 1 +
+ 1 file changed, 1 insertion(+)
+
 diff --git a/include/ntpd.h b/include/ntpd.h
 index ad3e30f..892088e 100644
 --- a/include/ntpd.h
 +++ b/include/ntpd.h
 @@ -89,6 +89,7 @@ struct ctl_var {
- #define DEF            0x20
- #define        PADDING         0x40
- #define        EOV             0x80
-+#define N_PPS          18      /* Pulse per Second */
+ #define DEF		0x20
+ #define	PADDING		0x40
+ #define	EOV		0x80
++#define N_PPS		18	/* Pulse per Second */
+ 
+ #define	RO	(CAN_READ)
+ #define	WO	(CAN_WRITE)
+-- 
+2.30.2
 
- #define        RO      (CAN_READ)
- #define        WO      (CAN_WRITE)
