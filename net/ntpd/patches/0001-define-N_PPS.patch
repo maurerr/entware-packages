@@ -1,6 +1,6 @@
 --- a/include/ntpd.h
 +++ b/include/ntpd.h
-@@ -89,6 +89,7 @@ struct ctl_var {
+@@ -91,6 +91,7 @@ struct ctl_var {
  #define DEF            0x20
  #define        PADDING         0x40
  #define        EOV             0x80
