@@ -40,6 +40,10 @@ can be embedded directly into a target application by adding a single source
 file (per platform) and a single header.
 endef
 
+ifdef CONFIG_LINUX_2_6_36
+	TARGET_CFLAGS += -DHIDAPI_ALLOW_BUILD_WORKAROUND_KERNEL_2_6_39
+endif
+
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include/hidapi
 	$(CP) $(PKG_INSTALL_DIR)/opt/include/hidapi/hidapi.h $(1)/opt/include/hidapi/
